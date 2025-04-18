@@ -1,11 +1,16 @@
 import os, time
 from pathlib import Path
 import pandas as pd
-
-from flask import Flask, jsonify, send_file
+from flask_cors import CORS
+from flask import Flask, jsonify, send_file, request
 import pandas as pd
 
-from scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
+
+from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
+from service.recommandWithSearch import semantic_search
+
+
+
 
 # -----------------------------------------------------------
 # Flask setup  
@@ -13,14 +18,6 @@ from scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 
 app = Flask(__name__)
 
-# Optional: enable CORS so a Next.js dev‑server on localhost:3000 can call the API.
-# Comment these two lines if you don't need CORS.
-try:
-    from flask_cors import CORS
-
-    CORS(app)
-except ImportError:
-    pass  # flask‑cors not installed – ignore
 
 
 # -----------------------------------------------------------
@@ -68,6 +65,20 @@ def download_file():
     return send_file(CSV_PATH, as_attachment=True)
 
 
+
+@app.route("/recommendsearch")
+def recommendsearch_api():
+    term = request.args.get("q")
+    if not term:
+        return jsonify({"error": "query param 'q' required"}), 400
+
+    try:
+        k = int(request.args.get("k", 6))
+    except ValueError:
+        return jsonify({"error": "query param 'k' must be an integer"}), 400
+
+    results = semantic_search(term, k)
+    return jsonify(results.to_dict(orient="records"))
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------

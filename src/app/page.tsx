@@ -1,3 +1,5 @@
+// src/app/page.tsx (or wherever your Home component is located)
+
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import AboutSectionTwo from "@/components/About/AboutSectionTwo";
 import Blog from "@/components/Blog";
@@ -9,28 +11,39 @@ import Hero from "@/components/Hero";
 import Pricing from "@/components/Pricing";
 import Testimonials from "@/components/Testimonials";
 import Video from "@/components/Video";
+import Dashboard from "../components/Dashboard";
+import Chatbot from "../components/Chatbot1"; // Import Chatbot
 import { Metadata } from "next";
+import RecommendedCourses from "@/components/RecommendedCourses";
 
 export const metadata: Metadata = {
   title: "Free Next.js Template for Startup and SaaS",
   description: "This is Home for Startup Nextjs Template",
-  // other metadata
 };
 
 export default function Home() {
   return (
     <>
       <ScrollUp />
+     
       <Hero />
-      <Features />
-      <Video />
-      <Brands />
+        {/* <Features /> 
+              <Brands />
       <AboutSectionOne />
       <AboutSectionTwo />
       <Testimonials />
       <Pricing />
       <Blog />
-      <Contact />
+*/}
+      {/* Dashboard Section */}
+   
+  
+
+      <Dashboard />
+      <Chatbot />
+      <RecommendedCourses />
+      
+       {/*<Contact />*/}
     </>
   );
 }

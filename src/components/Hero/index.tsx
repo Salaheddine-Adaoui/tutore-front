@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Scraper } from "@/lib/QueryClient";
+
 
 const Hero = () => {
   return (
@@ -280,6 +282,18 @@ const Hero = () => {
           </svg>
         </div>
       </section>
+
+      <section id="scraper-test" className="bg-gray-50 py-16 dark:bg-gray-900">
+      <div className="container mx-auto max-w-6xl px-4">
+        <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 dark:text-white">
+          Test du Scraper
+        </h2>
+
+        <Scraper />   {/* QueryProvider already injected by wrapper */}
+      </div>
+    </section>
+
+
     </>
   );
 };

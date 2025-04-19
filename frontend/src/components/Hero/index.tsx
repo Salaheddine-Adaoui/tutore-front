@@ -53,7 +53,7 @@ const Hero = () => (
                   hover:bg-primary/80 transition
                 "
               >
-                🔥 Accéder à l'espace de recommandation
+                🔥 Accéder à l'espace de recommandationn
               </Link>
             </div>
           </div>

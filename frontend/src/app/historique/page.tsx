@@ -1,0 +1,37 @@
+import { Course } from '@/types/course';
+import SingleCourse from '@/components/Courses/SingleCourse';
+import courseData from '@/components/Courses/courseData'; // Utiliser courseData ici
+import Breadcrumb from '@/components/Common/Breadcrumb';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Historique des formations | ENSA Khouribga',
+  description: 'Page d’historique des formations visitées par l’étudiant',
+};
+
+const HistoriquePage = () => {
+  console.log(courseData); // Vérifier le contenu de courseData
+
+  return (
+    <>
+      <Breadcrumb
+        pageName="History page"
+        description="This page is for displaying the courses you have visited!"
+      />
+      <section className="pb-[120px] pt-[120px]">
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            {/* Utiliser le type Course pour typer les éléments de courseData */}
+            {courseData.map((course: Course) => (
+              <div key={course.id} className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3">
+                <SingleCourse course={course} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default HistoriquePage;

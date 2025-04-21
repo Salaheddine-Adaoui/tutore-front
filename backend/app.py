@@ -6,8 +6,10 @@ from flask import Flask, jsonify, send_file, request
 import pandas as pd
 
 
+
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
+from service.chatbot import genrer_reponse
 
 
 
@@ -17,6 +19,7 @@ from service.recommandWithSearch import semantic_search
 # -----------------------------------------------------------
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000"])
 
 
 
@@ -79,6 +82,22 @@ def recommendsearch_api():
 
     results = semantic_search(term, k)
     return jsonify(results.to_dict(orient="records"))
+
+
+
+@app.route('/getChatRespend',methods=['POST'])
+def ChatbotRes():
+    data=request.get_json()
+    question=data.get('question') if data else None
+    if question:
+        rep=genrer_reponse(question)
+        return jsonify({'reponse':rep}),200
+    else:
+        return jsonify({'error':"question field is mandatory"}),400
+
+    
+    
+
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------

@@ -6,8 +6,10 @@ from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 
+
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
+from service.chatbot import genrer_reponse
 
 from models import db
 from models import Etudiant, Compte, Interet, Historique,EtudiantInteret
@@ -19,6 +21,7 @@ from service.for_test_service import create_test, get_all_tests, get_test, updat
 # -----------------------------------------------------------
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000"])
 
 
 # -----------------------------------------------------------
@@ -101,7 +104,18 @@ def recommendsearch_api():
     return jsonify(results.to_dict(orient="records"))
 
 
+@app.route('/getChatRespend',methods=['POST'])
+def ChatbotRes():
+    data=request.get_json()
+    question=data.get('question') if data else None
+    if question:
+        rep=genrer_reponse(question)
+        return jsonify({'reponse':rep}),200
+    else:
+        return jsonify({'error':"question field is mandatory"}),400
 
+    
+    
 
 # -----------------------------------------------------------
 # For Test DB
@@ -166,6 +180,8 @@ def delete_test_route(test_id):
     return {'deleted': True}
 
 
+
+    
 
 # -----------------------------------------------------------
 # Entrypoint

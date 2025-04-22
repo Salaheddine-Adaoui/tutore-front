@@ -5,6 +5,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.llms import Ollama
 from pathlib import Path
 
+# Définition du chemin vers le fichier PDF
 BASE_DIR = Path(__file__).resolve().parent.parent
 PDF_FILE = BASE_DIR / "static" / "dataPdf" / "infos_ensa.pdf"
 

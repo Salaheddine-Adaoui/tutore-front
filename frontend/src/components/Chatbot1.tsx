@@ -74,7 +74,7 @@ export default function Chatbot() {
               key={index}
               className={`p-2 rounded-lg w-fit max-w-[80%] text-sm ${
                 msg.sender === "user"
-                  ? "bg-blue-950 text-white self-start"
+                  ? "bg-blue-900 text-white self-start"
                   : "bg-gray-600 text-white self-end"
               }`}
             >
@@ -83,10 +83,11 @@ export default function Chatbot() {
             
           ))}
           {loading && (
-              <div className="p-3 text-sm  text-white rounded-lg w-fit self-start">
-                ... le bot réfléchit
-                
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin h-5 w-5 border-4 border-blue-400 border-t-transparent rounded-full"></div>
+                <span className="text-gray-700">Chargement...</span>
               </div>
+            
             )}
           {/* 🔽 Élément invisible pour scroll-to-bottom */}
           <div ref={messagesEndRef} />

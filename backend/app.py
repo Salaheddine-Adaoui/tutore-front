@@ -21,7 +21,7 @@ from service.for_test_service import create_test, get_all_tests, get_test, updat
 # -----------------------------------------------------------
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
+# CORS(app, origins=["http://localhost:3000"])
 
 
 # -----------------------------------------------------------
@@ -115,7 +115,7 @@ def ChatbotRes():
         return jsonify({'error':"question field is mandatory"}),400
 
     
-    
+
 
 # -----------------------------------------------------------
 # For Test DB

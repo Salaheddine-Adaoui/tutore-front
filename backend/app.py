@@ -82,6 +82,19 @@ def recommendsearch_api():
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------
+# app.py (ajoutez après vos autres routes)
+from flask import jsonify
+from service.recommandWithHistory import recommend_from_history
+
+@app.route("/recommend_history")
+def recommend_history_api():
+    try:
+        recs = recommend_from_history()  # utilise STATIC/dataCsv/history.csv
+        return jsonify(recs.to_dict(orient="records"))
+    except FileNotFoundError as fnf:
+        return jsonify({"error": str(fnf)}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

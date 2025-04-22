@@ -5,6 +5,7 @@ pip install pypdf
 pip install langchain
 pip install -U langchain-community
 
+
 For Database 
 username : admin
 password : tutore

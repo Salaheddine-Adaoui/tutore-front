@@ -1,4 +1,4 @@
-# from flask_cors import CORS
+from flask_cors import CORS
 # from pathlib import Path
 import os, time
 from datetime import date
@@ -22,7 +22,7 @@ from service.for_test_service import create_test, get_all_tests, get_test, updat
 
 app = Flask(__name__)
 # CORS(app, origins=["http://localhost:3000"])
-
+# this for test
 
 # -----------------------------------------------------------
 # postgres database setup  

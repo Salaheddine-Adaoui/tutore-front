@@ -27,7 +27,7 @@ app = Flask(__name__)
 # -----------------------------------------------------------
 # postgres database setup  
 # -----------------------------------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:tutore@localhost:5432/projet_tutore"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5432/projet_tutore"
 
 
 

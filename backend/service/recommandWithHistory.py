@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
+from typing import Union
 
 # Chargement modèle NLP
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -21,9 +22,11 @@ def _load_df():
     return df
 
 def recommend_from_history(
-    history_csv: str | Path | None = None,
+    # the code below support from Version 3.10 and newest
+    # history_csv: str | Path | None = None,  
+    history_csv: Union[str, Path, None] = None,
     k: int = 10
-) -> pd.DataFrame:
+    ) -> pd.DataFrame:
     """
     Recommande les k formations les plus proches du centroïde des formations visitées.
     """

@@ -21,7 +21,7 @@ export default function RecommendedCourses() {
           {/* Card 1 */}
           <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/course-1.jpg"
+              src="/images/favicon.png"
               alt="Formation 1"
               className="w-full h-48 object-cover"
             />
@@ -49,7 +49,7 @@ export default function RecommendedCourses() {
           {/* Card 2 */}
           <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/course-2.jpg"
+              src="/images/nextcloud.PNG"
               alt="Formation 2"
               className="w-full h-48 object-cover"
             />
@@ -77,7 +77,7 @@ export default function RecommendedCourses() {
           {/* Card 3 */}
           <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/course-3.jpg"
+              src="/images/hero/SigleEnsaKhouribga.jpeg"
               alt="Formation 3"
               className="w-full h-48 object-cover"
             />

@@ -19,9 +19,9 @@ export default function RecommendedCourses() {
         {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1 */}
-          <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
+          <a href="https://www.udemy.com/course/master-nextjs-full-stack/" target="_blank" className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/favicon.png"
+              src="https://img-c.udemycdn.com/course/240x135/5694728_a63c.jpg"
               alt="Formation 1"
               className="w-full h-48 object-cover"
             />
@@ -33,7 +33,7 @@ export default function RecommendedCourses() {
                 <span className="text-gray-400 text-sm">Durée: 4h</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">
-                Introduction à Next.js
+                 Build Modern Full-Stack Apps with Next.js
               </h3>
               <p className="text-gray-300 text-sm mb-4">
                 Découvrez les bases de Next.js, un framework React moderne pour
@@ -44,12 +44,12 @@ export default function RecommendedCourses() {
                 <span>Avril 2025</span>
               </div>
             </div>
-          </div>
+          </a>
 
           {/* Card 2 */}
-          <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
+          <a href="https://www.udemy.com/course/tailwind-from-scratch/" target="_blank" className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/nextcloud.PNG"
+              src="https://img-c.udemycdn.com/course/240x135/4699780_b487_2.jpg"
               alt="Formation 2"
               className="w-full h-48 object-cover"
             />
@@ -61,7 +61,7 @@ export default function RecommendedCourses() {
                 <span className="text-gray-400 text-sm">Durée: 6h</span>
               </div>
               <h3 className="text-xl font-semibold mb-3">
-                Maîtriser Tailwind CSS
+                Tailwind CSS From Scratch
               </h3>
               <p className="text-gray-300 text-sm mb-4">
                 Apprenez à concevoir des interfaces modernes et réactives avec
@@ -72,12 +72,12 @@ export default function RecommendedCourses() {
                 <span>Mars 2025</span>
               </div>
             </div>
-          </div>
+          </a>
 
           {/* Card 3 */}
-          <div className="bg-[#111827] rounded-lg shadow-md overflow-hidden">
+          <a href="https://www.udemy.com/course/master-react-hooks-by-example/" target="_blank" className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden">
             <img
-              src="/images/hero/SigleEnsaKhouribga.jpeg"
+              src="https://img-c.udemycdn.com/course/240x135/6315865_27ef.jpg"
               alt="Formation 3"
               className="w-full h-48 object-cover"
             />
@@ -100,7 +100,7 @@ export default function RecommendedCourses() {
                 <span>Fév 2025</span>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </section>

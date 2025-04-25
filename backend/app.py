@@ -1,16 +1,15 @@
-# from flask_cors import CORS
+from flask_cors import CORS
 # from pathlib import Path
 import os, time
 from datetime import date
 from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
-
-
+from service.authentication import Register,login,remember_password,chek_code,update_password
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
 from service.chatbot import genrer_reponse
-
+from flask_mail import Mail
 from models import db
 from models import Etudiant, Compte, Interet, Historique,EtudiantInteret
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
@@ -21,13 +20,19 @@ from service.for_test_service import create_test, get_all_tests, get_test, updat
 # -----------------------------------------------------------
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
+CORS(app,origins=['http://localhost:3000'])
 
 
 # -----------------------------------------------------------
 # postgres database setup  
 # -----------------------------------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:tutore@localhost:5432/projet_tutore"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5432/projet_tutore"
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'adaouisalah552@gmail.com'
+app.config['MAIL_PASSWORD'] = 'sukqpindpewvhhoh'  # Utilise un mot de passe d'application si Gmail
+mail = Mail(app)
 
 
 
@@ -179,9 +184,49 @@ def delete_test_route(test_id):
         return {'error': 'not found'}, 404
     return {'deleted': True}
 
+# -----------------------------------------------------------
+# Rgister
+# -----------------------------------------------------------
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+
+    nom = data.get('lastName')
+    prenom = data.get('firstName')
+    email = data.get('email')
+    password = data.get('password')
+
+    return Register(nom, prenom, email, password)
 
 
-    
+# login (emial password )
+@app.route('/login',methods=['POST'])
+def loginn():
+    data = request.json
+    email=data.get('email');password=data.get('password')
+    return login(email,password)
+
+# oublier password 
+@app.route('/remamber',methods=['POST'])
+def rember():
+    email=request.args.get('email')
+    return remember_password(email,mail)
+
+# chek code par email 
+@app.route('/chekcode',methods=['POST'])
+def chek_codee():
+    code = request.args.get('code')
+    local_storage_code=request.args.get('loca_storag_code')
+    return chek_code(code,local_storage_code)
+
+# update password 
+@app.route('/updatepassword',methods=['POST'])
+def password_update():
+    password = request.args.get('password')
+    email = request.args.get('email')
+    return update_password(email,password)
+
+
 
 # -----------------------------------------------------------
 # Entrypoint

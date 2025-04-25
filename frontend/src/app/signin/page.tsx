@@ -2,27 +2,70 @@
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { Modal } from "@/components/all/Modal";
+import { api } from "@/lib/api";
+
+
+
 
 
 const SigninPage = () => {
 
     // State to handle modal visibility and the entered confirmation code.
     const [isModalForgetOpen, setModalForgetOpen] = useState(false);
-    const [isModalErrerOpen, setModalErrerOpen] = useState(false);
+    const [err,setErr]= useState({status:false,msg:'default err message'})
+    const [succ,setSucc]= useState({status:false,msg:'default succes message'})
     const [code, setCode] = useState("");
-  
-    // Called when user clicks confirm inside modal.
-    const handleConfirm = () => {
-      // Add your confirmation logic here.
-      setModalErrerOpen(false);
-      setModalForgetOpen(false);
+
+    // state for login form 
+    const [form,setForm]=useState({
+      email:"",
+      password:""
+    })
+
+    const handlchange =(e)=>{
+      setForm({...form,[e.target.name]:e.target.value})
+    }
+
+    const validateForm=()=>{
+      const {email, password } = form;
+    
+      if (!email.trim()) {
+        setErr({...err,status:true,msg:"Le prénom est requis."})
+        setSucc({...succ,status:false})
+        return false;
+      }
+    
+      if (!password || password.length < 6) {
+        setErr({...err,status:true,msg:"Le password est requis."})
+        setSucc({...succ,status:false})
+        return false;
+      }
+      setErr({...err,status:false})
+      return true;
     };
+    
+
+    const Signin = ()=>{
+      api.post('/login',form)
+      .then(res=>{
+        setSucc({...succ,status:true,msg:res.data.succes})
+        setErr({...err,status:false})
+      })
+    .catch(err=>{
+      setErr({...err,status:true,msg:err.response.data.error})
+      setSucc({...err,status:false})
+    })
+    }
+
+    const handlsumbit =(e)=>{
+      e.preventDefault()
+      Signin()
+    }
+
+    
   
-    // Called when the user clicks cancel or the overlay.
-    const handleCancel = () => {
-      setModalErrerOpen(false);
-      setModalForgetOpen(false)
-    };
+    
 
   return (
     <>
@@ -42,7 +85,7 @@ const SigninPage = () => {
                   </p>
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                 </div>
-                <div>
+                <form onSubmit={handlsumbit}>
                   <div className="mb-8">
                     <label
                       htmlFor="email"
@@ -54,6 +97,8 @@ const SigninPage = () => {
                     <input
                       type="email"
                       name="email"
+                      value={form.email}
+                      onChange={handlchange}
                       placeholder="Enter your Email"
                       className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
                     />
@@ -69,6 +114,8 @@ const SigninPage = () => {
                     <input
                       type="password"
                       name="password"
+                      value={form.password}
+                      onChange={handlchange}
                       placeholder="Enter your Password"
                       className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
                     />
@@ -111,18 +158,18 @@ const SigninPage = () => {
                       <a
                         href="#0"
                         className="text-sm font-medium text-primary hover:underline"
-                        onClick={() => setModalForgetOpen(true)}
+                        onClick={()=>{setModalForgetOpen(true)}}
                       >
                         Forgot Password?
                       </a>
                     </div>
                   </div>
                   <div className="mb-6">
-                    <button className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-[20px] bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-[#edeeef11] hover:text-primary" onClick={() => setModalErrerOpen(true)}>
+                    <button type="submit" className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-[20px] bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-[#edeeef11] hover:text-primary" >
                       Sign in
                     </button>
                   </div>
-                </div>
+                </form>
                 <p className="text-center text-base font-medium text-body-color">
                   Don’t you have an account?{" "}
                   <Link href="/signup" className="text-primary hover:underline">
@@ -201,7 +248,7 @@ const SigninPage = () => {
             exit={{ opacity: 0 }}
           >
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black opacity-80" onClick={handleCancel}></div>
+            <div className="absolute inset-0 bg-black opacity-80" ></div>
 
             {/* Modal window */}
             <motion.div
@@ -225,17 +272,17 @@ const SigninPage = () => {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Enter code"
-                className="mb-8 w-full rounded-[20px] border px-4 py-2 text-base text-body-color  transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#f1f1f1] dark:text-[#2C303B]"
+                className="mb-8 w-full rounded border px-4 py-2 text-base text-body-color  transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#f1f1f1] dark:text-[#2C303B]"
               />
               <div className="flex justify-center items-center gap-4">
                 <button
-                  onClick={handleConfirm}
+                 
                   className="rounded-[10px] bg-primary px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-600"
                 >
                   Confirm
                 </button>
                 <button
-                  onClick={handleCancel}
+                 
                   className="rounded-[10px] bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
                 >
                   Cancel
@@ -245,46 +292,10 @@ const SigninPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <AnimatePresence>
-        {isModalErrerOpen && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black opacity-80" onClick={handleCancel}></div>
-
-            {/* Modal window */}
-            <motion.div
-              className="relative z-10 w-full max-w-xl rounded-lg bg-white p-8 shadow-xl dark:bg-[#2C303B]"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="mb-6 text-xl font-bold dark:text-[#C80A37] text-center ">
-              <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-8 inline mr-3" fill="#C80A37" viewBox="0 0 512 512"><path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm0 319.91a20 20 0 1120-20 20 20 0 01-20 20zm21.72-201.15l-5.74 122a16 16 0 01-32 0l-5.74-121.94v-.05a21.74 21.74 0 1143.44 0z"/></svg>
-                Email or password incorrect
-              </h2>
-              <p className="mb-8 dark:text-gray-300 text-center">
-                The email address and password you entered do not match our records. Please check your credentials and try again.
-              </p>
-              
-              <div className="flex justify-center items-center gap-4">
-                <button
-                  onClick={handleCancel}
-                  className="rounded-[10px] bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {err.status&&<Modal nature={'error'} message={err.msg}/>}
+      {succ.status&&<Modal nature={'succes'} message={succ.msg}/>}
+      
+      
     </>
   );
 };

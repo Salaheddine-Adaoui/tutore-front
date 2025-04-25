@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Metadata } from "next";
+import { api } from "@/lib/api";
+import { EmailModal } from "@/components/all/EmailModal";
+import { Modal } from "@/components/all/Modal";
 
 
 
@@ -11,6 +14,18 @@ const SignupPage = () => {
   // State to handle modal visibility and the entered confirmation code.
   const [isModalOpen, setModalOpen] = useState(false);
   const [code, setCode] = useState("");
+  const [form,setForme]=useState({
+    firstName:"",
+    lastName:"",
+    email:"",
+    password:""
+  })
+  const [err,setErr]= useState({status:false,msg:'default message'})
+  const [succ,setSucc]= useState({status:false,msg:'default message'})
+
+  const handlchange=(e)=>{
+    setForme({...form,[e.target.name]:e.target.value})
+  }
 
   // Called when user clicks confirm inside modal.
   const handleConfirm = () => {
@@ -23,6 +38,68 @@ const SignupPage = () => {
   const handleCancel = () => {
     setModalOpen(false);
   };
+
+  // apis 
+
+  const signup=()=>{
+    api.post('/register',form)
+    .then(res=>{
+      setSucc({...succ,status:true,msg:res.data.success})
+      setErr({...err,status:false})
+    })
+    .catch(errr=>{
+      setErr({...err,status:true,msg:errr.response.data.error})
+      setSucc({...succ,status:false})
+    })
+  }
+
+  // validation de formualire 
+
+    const validateForm = () => {
+      const { firstName, lastName, email, password } = form;
+    
+      if (!firstName.trim()) {
+        setErr({...err,status:true,msg:"Le prénom est requis."})
+        setSucc({...succ,status:false})
+        return false;
+      }
+    
+      if (!lastName.trim()) {
+        setErr({...err,status:true,msg:"Le nom est requis."})
+        setSucc({...succ,status:false})
+        return false;
+      }
+    
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.trim() || !emailRegex.test(email)) {
+        if(!email.trim()){
+          setErr({...err,status:true,msg:"Le email est requis."})
+        }
+        else{
+          setErr({...err,status:true,msg:"Le email ne matche pas bien"})
+        }
+        setSucc({...succ,status:false})
+        return false;
+      }
+    
+      if (!password || password.length < 6) {
+        setErr({...err,status:true,msg:"Le password est requis."})
+        setSucc({...succ,status:false})
+        return false;
+      }
+      setErr({...err,status:false})
+      return true;
+    };
+    
+
+  // handlsubmit
+
+  const handlsubmit=(e)=>{
+    e.preventDefault()
+    if(validateForm()){
+      signup()
+    }
+  }
 
   return (
     <>
@@ -41,7 +118,7 @@ const SignupPage = () => {
                   </p>
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                 </div>
-                <form>
+                <form onSubmit={handlsubmit}>
                   <div className="mb-8 flex justify-center items-center gap-8">
                     {/* First Name Input */}
                     <div>
@@ -51,8 +128,10 @@ const SignupPage = () => {
                       </label>
                       <input
                         id="firstName"
+                        onChange={handlchange}
                         type="text"
                         name="firstName"
+                        value={form.firstName}
                         placeholder="Your first name"
                         className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"/>
                     </div>
@@ -66,6 +145,8 @@ const SignupPage = () => {
                         id="lastName"
                         type="text"
                         name="lastName"
+                        value={form.lastName}
+                        onChange={handlchange}
                         placeholder="Your last name"
                         className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
                         />
@@ -78,8 +159,10 @@ const SignupPage = () => {
                     </label>
                     <input
                       id="email"
-                      type="email"
+                      type="text"
                       name="email"
+                      value={form.email}
+                      onChange={handlchange}
                       placeholder="Enter your email"
                       className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
                     />
@@ -93,6 +176,8 @@ const SignupPage = () => {
                       id="password"
                       type="password"
                       name="password"
+                      value={form.password}
+                      onChange={handlchange}
                       placeholder="Enter your password"
                       className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
                     />
@@ -101,8 +186,7 @@ const SignupPage = () => {
                   {/* This button triggers the modal */}
                   <div className="mb-6">
                     <button
-                      type="button"
-                      onClick={() => setModalOpen(true)}
+                      type='submit'
                       className="flex w-full items-center justify-center rounded-[20px] bg-primary px-9 py-4 text-base font-medium text-white transition-all duration-300 hover:bg-[#edeeef11] hover:text-primary shadow-submit dark:shadow-submit-dark"
                     >
                       Sign up
@@ -178,61 +262,8 @@ const SignupPage = () => {
         </div>
       </section>
 
-
-      {/* Modal: AnimatePresence handles mounting/unmounting animations */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black opacity-80" onClick={handleCancel}></div>
-
-            {/* Modal window */}
-            <motion.div
-              className="relative z-10 w-full max-w-xl rounded-lg bg-white p-8 shadow-xl dark:bg-[#2C303B]"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="mb-6 text-xl font-bold dark:text-white text-center ">
-                Email Confirmation
-              </h2>
-              <p className="mb-4 dark:text-gray-300">
-                We have sent a confirmation to your academic email. Please check your email.
-              </p>
-              <p className="mb-4 dark:text-gray-400 text-center">
-                Please enter the confirmation code:
-              </p>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="Enter code"
-                className="mb-8 w-full rounded-[20px] border px-4 py-2 text-base text-body-color  transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#f1f1f1] dark:text-[#2C303B]"
-              />
-              <div className="flex justify-center items-center gap-4">
-                <button
-                  onClick={handleConfirm}
-                  className="rounded-[10px] bg-primary px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-600"
-                >
-                  Confirm
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="rounded-[10px] bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {err.status&&<Modal nature={'error'} message={err.msg}/>}
+      {succ.status&&<Modal nature={'succes'} message={succ.msg}/>}
     </>
   );
 };

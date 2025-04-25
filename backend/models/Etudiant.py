@@ -1,4 +1,8 @@
 from models import db 
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+
 
 class Etudiant(db.Model):
     __tablename__ = 'etudiant'
@@ -19,3 +23,5 @@ class Etudiant(db.Model):
     interets    = db.relationship('Interet',
                                    secondary='etudiant_interet',
                                    back_populates='etudiants')
+    
+    

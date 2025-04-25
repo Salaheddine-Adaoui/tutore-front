@@ -11,6 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 
+from service.pre_traitement import pretraiter_data
+
 
 # ---------------------------------------------------------------------------
 # Configuration ‑‑ adjust as you like
@@ -23,8 +25,8 @@ TARGET_URLS = [
     "https://www.udemyfreebies.com/search/hi/1"
 ]
 
-CSV_PATH = Path("udemyfreebies_courses.csv")
-
+# CSV_PATH = Path("udemyfreebies_courses.csv")
+CSV_PATH = BASE_DIR / "static" / "dataCsv" / "udemyfreebies_courses.csv"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -75,6 +77,10 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--lang=fr-FR")
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+
+
     # options.add_argument("--headless")  # enable if you want headless Chrome
 
     driver = webdriver.Chrome(service=service, options=options)
@@ -141,4 +147,5 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
 
     df = pd.DataFrame(all_courses)
     df.to_csv(CSV_PATH, index=False, encoding="utf-8-sig")
+    pretraiter_data()
     return df

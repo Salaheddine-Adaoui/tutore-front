@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Modal } from "@/components/all/Modal";
 import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
+
 
 
 
@@ -11,17 +13,44 @@ import { api } from "@/lib/api";
 
 const SigninPage = () => {
 
+  const router =useRouter();
+
     // State to handle modal visibility and the entered confirmation code.
     const [isModalForgetOpen, setModalForgetOpen] = useState(false);
     const [err,setErr]= useState({status:false,msg:'default err message'})
     const [succ,setSucc]= useState({status:false,msg:'default succes message'})
     const [code, setCode] = useState("");
+    const [code_back,setCodeback]=useState('')
+
+    const handlclose=()=>{
+      setErr({...err,status:false})
+      setSucc({...succ,status:false})
+    }
 
     // state for login form 
     const [form,setForm]=useState({
       email:"",
       password:""
     })
+
+    const handlremeber = async() => {
+      await api.post(`/chekcode?email=${form.email}&code=${code}`)
+      .then(res=>{
+        console.log(res.data)
+   
+        router.push(`/signin/changpass?email=${form.email}`) // ajouter page de changement de password 
+      })
+      .catch(err=>console.log(err.response.data))
+    }
+
+    const handlsendCode=async()=>{
+      await api.post(`remamber?email=${form.email}`)
+        .then(res=>{
+          console.log(res.data)
+          setCodeback(res.data.code)
+        })
+        .catch(err=>console.log(err.repsonse.data))
+    }
 
     const handlchange =(e)=>{
       setForm({...form,[e.target.name]:e.target.value})
@@ -46,8 +75,8 @@ const SigninPage = () => {
     };
     
 
-    const Signin = ()=>{
-      api.post('/login',form)
+    const Signin =async()=>{
+      await api.post('/login',form)
       .then(res=>{
         setSucc({...succ,status:true,msg:res.data.succes})
         setErr({...err,status:false})
@@ -63,9 +92,6 @@ const SigninPage = () => {
       Signin()
     }
 
-    
-  
-    
 
   return (
     <>
@@ -75,9 +101,8 @@ const SigninPage = () => {
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[500px]  bg-white px-6 py-10 dark:bg-dark sm:p-[60px] rounded-[20px]">
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-                  Log in to your account
+                  Log in to your account 
                 </h3>
-
                 <div className="mb-8 flex items-center justify-center">
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                   <p className="w-full px-5 mb-3 text-center text-base font-medium text-body-color text-nowrap">
@@ -158,7 +183,12 @@ const SigninPage = () => {
                       <a
                         href="#0"
                         className="text-sm font-medium text-primary hover:underline"
-                        onClick={()=>{setModalForgetOpen(true)}}
+                        onClick={async()=>{
+                          handlsendCode()
+                          setModalForgetOpen(true)
+                          
+                  
+                        }}
                       >
                         Forgot Password?
                       </a>
@@ -276,7 +306,7 @@ const SigninPage = () => {
               />
               <div className="flex justify-center items-center gap-4">
                 <button
-                 
+                  onClick={handlremeber}
                   className="rounded-[10px] bg-primary px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-600"
                 >
                   Confirm
@@ -292,8 +322,8 @@ const SigninPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      {err.status&&<Modal nature={'error'} message={err.msg}/>}
-      {succ.status&&<Modal nature={'succes'} message={succ.msg}/>}
+      {err.status&&<Modal nature={'error'} message={err.msg} closed={handlclose}/>}
+      {succ.status&&<Modal nature={'succes'} message={succ.msg} closed={handlclose}/>}
       
       
     </>

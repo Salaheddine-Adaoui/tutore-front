@@ -1,7 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
+import { api } from '@/lib/api';
 
-export const EmailModal = () => {
+export const EmailModal = ({closed}) => {
+
+  const [code,setCode]=useState('')
+  const email='adoauisalah552@gmail.com'
+  const sendCode = ()=>{
+    api.post(`/chekcode?email=${email}&code=${code}`)
+    .then(res=>console.log(res.data))
+    .catch(err=>console.log(err.response.data))
+  }
+
+  const handlsubmit=(e)=>{
+    e.preventDefault()
+    sendCode()
+  }
+
+
   return (
     <div>
         {/* Modal: AnimatePresence handles mounting/unmounting animations */}
@@ -35,7 +51,8 @@ export const EmailModal = () => {
               </p>
               <input
                 type="text"
-               
+                onChange={(e)=>setCode(e.target.value)}
+                value={code}
                 placeholder="Enter code"
                 className="mb-8 w-full rounded-[20px] border px-4 py-2 text-base text-body-color  transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#f1f1f1] dark:text-[#2C303B]"
               />
@@ -47,6 +64,7 @@ export const EmailModal = () => {
                   Confirm
                 </button>
                 <button
+                onClick={()=>{closed}}
     
                   className="rounded-[10px] bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
                 >

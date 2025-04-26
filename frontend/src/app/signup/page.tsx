@@ -27,6 +27,10 @@ const SignupPage = () => {
     setForme({...form,[e.target.name]:e.target.value})
   }
 
+  const handlclose=()=>{
+    setErr({...err,status:false})
+    setSucc({...succ,status:false})
+  }
   // Called when user clicks confirm inside modal.
   const handleConfirm = () => {
     // Add your confirmation logic here.
@@ -262,8 +266,8 @@ const SignupPage = () => {
         </div>
       </section>
 
-      {err.status&&<Modal nature={'error'} message={err.msg}/>}
-      {succ.status&&<Modal nature={'succes'} message={succ.msg}/>}
+      {err.status&&<Modal nature={'error'} message={err.msg} closed={handlclose}/>}
+      {succ.status&&<Modal nature={'succes'} message={succ.msg} closed={handlclose}/>}
     </>
   );
 };

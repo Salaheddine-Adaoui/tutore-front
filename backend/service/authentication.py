@@ -1,8 +1,9 @@
-from models import Etudiant,db,Compte
+from models import Etudiant,db,Compte,PasswordResetCode
 from flask import jsonify
 import string
 import random
 from flask_mail import Mail, Message
+from datetime import datetime, timedelta
 
 
 import traceback
@@ -60,8 +61,15 @@ def remember_password(email,mail):
     compte = Compte.query.filter_by(email=email)
     if compte:
         code =generate_code()
-
+        code_db=PasswordResetCode(email=email,code=code,expires_at=datetime.utcnow() + timedelta(minutes=10))
         try:
+            try:
+                PasswordResetCode.query.filter_by(email=email).delete()
+                db.session.add(code_db)
+                db.session.commit()
+            except Exception as e:
+                return jsonify({'message': 'Erreur lors de l’envoi de l’email', 'error': str(e)}), 500
+
             msg = Message('Code de réinitialisation',
                         sender='adaouisalah552@gmail.com',
                         recipients=[email])
@@ -91,13 +99,14 @@ def update_password(email,password):
 
 # chek the code for user
 
-def chek_code(code,localstorage_code):
-    if code == localstorage_code:
-        return jsonify({
-            'succes':"code is correct"
-        }),200
-    return jsonify({
-        'error':"code is not correct"
-    }),400
+def chek_code(email,code):
+    db_code=PasswordResetCode.query.filter_by(email=email,code=code).first()
+    if not db_code:
+        return jsonify({'error':'email or code not exist'}),400
+    else:
+        if db_code.is_expired():
+            return jsonify({'error':'the code is expired'}),400
+        else:
+            return jsonify({'succes':'code is verified whit succes , you can update your password '})
 
 

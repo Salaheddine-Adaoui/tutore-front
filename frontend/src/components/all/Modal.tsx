@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 
-export const Modal = ({nature,message}) => {
+export const Modal = ({nature,message,closed}) => {
   return (
     <div>
         {/* Modal: AnimatePresence handles mounting/unmounting animations */}
@@ -36,6 +36,7 @@ export const Modal = ({nature,message}) => {
               </p>
               <div className="flex justify-center items-center gap-4">
                 <button
+                  onClick={closed}
                   className="rounded-[10px] bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
                 >
                   Cancel

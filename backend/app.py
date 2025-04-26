@@ -215,8 +215,8 @@ def rember():
 # chek code par email 
 @app.route('/chekcode',methods=['POST'])
 def chek_codee():
-    code = request.args.get('code')
-    local_storage_code=request.args.get('loca_storag_code')
+    code = request.args.get('email')
+    local_storage_code=request.args.get('code')
     return chek_code(code,local_storage_code)
 
 # update password 
@@ -225,7 +225,6 @@ def password_update():
     password = request.args.get('password')
     email = request.args.get('email')
     return update_password(email,password)
-
 
 
 # -----------------------------------------------------------

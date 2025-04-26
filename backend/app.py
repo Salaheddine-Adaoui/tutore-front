@@ -5,6 +5,7 @@ from datetime import date
 from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
@@ -23,6 +24,7 @@ from service.for_test_service import create_test, get_all_tests, get_test, updat
 app = Flask(__name__)
 # CORS(app, origins=["http://localhost:3000"])
 # this for test
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # -----------------------------------------------------------
 # postgres database setup  

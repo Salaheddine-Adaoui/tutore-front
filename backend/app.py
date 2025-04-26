@@ -7,14 +7,14 @@ import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
 from service.chatbot import genrer_reponse
 
 from models import db
-from models import Etudiant, Compte, Interet, Historique,EtudiantInteret
+from service.recommandWithHistory import recommend_from_history
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
+
 
 
 # -----------------------------------------------------------
@@ -32,11 +32,8 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5432/projet_tutore"
 
 
-
-
 # 3. init the db (from models/__init__.py)
 db.init_app(app)
-
 
 # 5. create tables if they don't exist
 with app.app_context():
@@ -51,6 +48,7 @@ with app.app_context():
 
 @app.route("/")
 def index():
+    print("👉 Route / appelée")
     return """
         <h1>Bienvenue dans le Scraper UdemyFreebies</h1>
         <a href="/scrape">Lancer le scraping</a>
@@ -91,6 +89,7 @@ def download_file():
 
 
 
+# test GET http://localhost:5000/recommendsearch?q=build%20robust%20portfolio&k=2
 @app.route("/recommendsearch")
 def recommendsearch_api():
     term = request.args.get("q")
@@ -105,6 +104,17 @@ def recommendsearch_api():
     results = semantic_search(term, k)
     return jsonify(results.to_dict(orient="records"))
 
+
+@app.route("/recommend_history")
+def recommend_history_api():
+    try:
+        recs = recommend_from_history()  # utilise STATIC/dataCsv/history.csv
+        return jsonify(recs.to_dict(orient="records"))
+    except FileNotFoundError as fnf:
+        return jsonify({"error": str(fnf)}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
 
 @app.route('/getChatRespend',methods=['POST'])
 def ChatbotRes():
@@ -189,18 +199,10 @@ def delete_test_route(test_id):
 # Entrypoint
 # -----------------------------------------------------------
 # app.py (ajoutez après vos autres routes)
-from flask import jsonify
-from service.recommandWithHistory import recommend_from_history
 
-@app.route("/recommend_history")
-def recommend_history_api():
-    try:
-        recs = recommend_from_history()  # utilise STATIC/dataCsv/history.csv
-        return jsonify(recs.to_dict(orient="records"))
-    except FileNotFoundError as fnf:
-        return jsonify({"error": str(fnf)}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

@@ -51,7 +51,7 @@ export default function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "Revenue Growth (2025)", color: "#fff" },
+      title: { display: true, text: "nombre de visite de site", color: "#fff" },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
     scales: {
@@ -83,7 +83,7 @@ export default function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "Monthly Purchases", color: "#fff" },
+      title: { display: true, text: "nombre de formation aimée par catégorie", color: "#fff" },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
     scales: {
@@ -114,7 +114,7 @@ export default function Dashboard() {
   const pieOptions = {
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "User Device Distribution", color: "#fff" },
+      title: { display: true, text: "nombre de visite par categories", color: "#fff" },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
   };
@@ -127,16 +127,16 @@ export default function Dashboard() {
         {/* Simple Stats Cards */}
         <div className="grid grid-cols-1 gap-6 mb-12 sm:grid-cols-2 lg:grid-cols-3">
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Total Users</h3>
+            <h3 className="text-xl font-semibold mb-2">Formations disponibles</h3>
             <p className="text-4xl font-bold">1,234</p>
           </div>
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Active Sessions</h3>
+            <h3 className="text-xl font-semibold mb-2">Formations visités</h3>
             <p className="text-4xl font-bold">120</p>
           </div>
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Monthly Revenue</h3>
-            <p className="text-4xl font-bold">$4,560</p>
+            <h3 className="text-xl font-semibold mb-2">Formations aimées</h3>
+            <p className="text-4xl font-bold">4,560</p>
           </div>
         </div>
 

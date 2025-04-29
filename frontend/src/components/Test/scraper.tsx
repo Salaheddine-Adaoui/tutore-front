@@ -91,13 +91,13 @@ function CourseCard({ course }: { course: Course }) {
   return (
     <article className="rounded border shadow-sm overflow-hidden bg-white">
       <h1>hello word</h1>
-      <Image
+      {/* <Image
         src={course.image}
         alt={course.title}
         width={400}
         height={225}
         className="w-full object-cover"
-      />
+      /> */}
 
       <div className="p-4 flex flex-col gap-2">
         <h3 className="font-semibold text-lg leading-snug">

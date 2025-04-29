@@ -1,4 +1,9 @@
+'use client'
+
+import { api } from "@/lib/api";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 const interests = [
   "Big Data",
@@ -18,10 +23,46 @@ const interests = [
   "Électrotechnique (Machines et Systèmes Électriques)",
   "Automatismes et Commande des Systèmes",
   "Réseaux Électriques et Smart Grids",
-
 ];
 
 const Formular = () => {
+
+  const router =useRouter()
+
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const param = useSearchParams()
+  const email = param.get('email')
+
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      // Ajouter l'intérêt sélectionné
+      setSelectedInterests((prev) => [...prev, value]);
+    } else {
+      // Retirer l'intérêt si décoché
+      setSelectedInterests((prev) => prev.filter((interest) => interest !== value));
+    }
+  };
+
+  const saveInetreste = ()=>{
+    const obj={
+      interet:selectedInterests
+    }
+    api.post(`/saveInteret?email=${email}`,obj)
+    .then(res=>{
+      console.log(res.data)
+      router.push('/')
+    })
+    .catch(err=>console.log(err.response.data))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    saveInetreste()
+  };
+
+
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">
@@ -35,7 +76,7 @@ const Formular = () => {
                 <p className="mb-11 text-center text-base font-medium text-body-color">
                    To help us suggest suitable courses
                 </p>
-                <form>
+                <form onSubmit={handleSubmit}>
                   
                   <div className="mb-8">
                     <label className="mb-3 block text-sm text-dark dark:text-white">
@@ -48,6 +89,9 @@ const Formular = () => {
                           id={`interest-${index}`}
                           name="interests"
                           value={interest}
+                          checked={selectedInterests.includes(interest)}
+                          onChange={handleCheckboxChange}
+                        
                           className="mr-2 h-4 w-4"
                         />
                         <label htmlFor={`interest-${index}`} className="text-sm text-dark dark:text-white">

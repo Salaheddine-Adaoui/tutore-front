@@ -7,10 +7,15 @@ import { Metadata } from "next";
 import { api } from "@/lib/api";
 import { EmailModal } from "@/components/all/EmailModal";
 import { Modal } from "@/components/all/Modal";
+import { useRouter } from "next/navigation";
 
 
 
 const SignupPage = () => {
+
+  const router = useRouter()
+
+
   // State to handle modal visibility and the entered confirmation code.
   const [isModalOpen, setModalOpen] = useState(false);
   const [code, setCode] = useState("");
@@ -50,6 +55,7 @@ const SignupPage = () => {
     .then(res=>{
       setSucc({...succ,status:true,msg:res.data.success})
       setErr({...err,status:false})
+      router.push(`/formulaire?email=${form.email}`)
     })
     .catch(errr=>{
       setErr({...err,status:true,msg:errr.response.data.error})

@@ -6,7 +6,7 @@ from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 
-from service.authentication import Register,login,remember_password,chek_code,update_password
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
 
 from flask_cors import CORS
 
@@ -16,6 +16,7 @@ from service.recommandWithSearch import semantic_search
 from service.chatbot import genrer_reponse
 from flask_mail import Mail
 from models import db
+from service.recommandationWhitFormulaire import recommend_from_interests
 from service.recommandWithHistory import recommend_from_history
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
 
@@ -244,6 +245,23 @@ def password_update():
     password = request.args.get('password')
     email = request.args.get('email')
     return update_password(email,password)
+
+# recommndation par formulaire 
+@app.route('/recommndation_formualire',methods=['POST'])
+def recommandation_formualire():
+    email= request.args.get('email')
+    interet = getEtudiant_Interet(email)
+    return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
+
+
+@app.route('/saveInteret',methods=['POST'])
+def saveInteret():
+    email = request.args.get('email')
+    interest = request.get_json().get('interet')
+    return save_interet(email,interest)
+
+
+
 
 
 # -----------------------------------------------------------

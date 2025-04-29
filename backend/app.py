@@ -5,17 +5,21 @@ from datetime import date
 from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
+
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
 
 from flask_cors import CORS
 
-
+from models.Historique import Historique
+from models import db
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
 from service.chatbot import genrer_reponse
 from flask_mail import Mail
 from models import db
+from service.recommandationWhitFormulaire import recommend_from_interests
 from service.recommandWithHistory import recommend_from_history
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
 
@@ -244,6 +248,42 @@ def password_update():
     password = request.args.get('password')
     email = request.args.get('email')
     return update_password(email,password)
+
+@app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])
+@cross_origin()                               # ← retire si CORS est déjà global
+def delete_history_for_student(id_etudiant: int):
+    """
+    Supprime TOUT l'historique d’un étudiant.
+    Ex : DELETE http://localhost:5000/history/3
+    """
+    try:
+        # .delete() renvoie le nombre de lignes supprimées
+        rows = (
+            Historique.query
+            .filter_by(id_etudiant=id_etudiant)
+            .delete(synchronize_session=False)
+        )
+        db.session.commit()
+        return jsonify({"message": f"{rows} lignes supprimées"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+# recommndation par formulaire 
+@app.route('/recommndation_formualire',methods=['POST'])
+def recommandation_formualire():
+    email= request.args.get('email')
+    interet = getEtudiant_Interet(email)
+    return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
+
+
+@app.route('/saveInteret',methods=['POST'])
+def saveInteret():
+    email = request.args.get('email')
+    interest = request.get_json().get('interet')
+    return save_interet(email,interest)
+
+
+
 
 
 # -----------------------------------------------------------

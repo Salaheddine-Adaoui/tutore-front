@@ -1,9 +1,10 @@
-from models import Etudiant,db,Compte,PasswordResetCode
+from models import Etudiant,db,Compte,PasswordResetCode,Interet,EtudiantInteret
 from flask import jsonify
 import string
 import random
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
+
 
 
 import traceback
@@ -110,3 +111,43 @@ def chek_code(email,code):
             return jsonify({'succes':'code is verified whit succes , you can update your password '})
 
 
+
+def save_interet(email, interests):
+    compte = Compte.query.filter_by(email=email).first()
+    etudiant = Etudiant.query.filter_by(id_etudiant=compte.id_utilis).first()
+    if not etudiant:
+        return jsonify({'error': 'Étudiant non trouvé'}), 404
+    
+    try:
+        for i in interests:
+            interet = Interet.query.filter_by(interet=i).first()
+            if not interet:
+                return jsonify({'error': f'Intérêt "{i}" non trouvé'}), 404
+
+            etudiant_interet = EtudiantInteret(
+                id_etudiant=etudiant.id_etudiant,
+                id_interet=interet.id_interet
+            )
+            db.session.add(etudiant_interet)
+
+        db.session.commit()
+        return jsonify({'success': 'Les intérêts ont été enregistrés avec succès'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Erreur lors de la transaction DB : {str(e)}'}), 400
+
+
+def getEtudiant_Interet(email):
+    etudiant = Etudiant.query.filter_by(email).first()
+    id_etudiant = etudiant.id_etudiant 
+    Interet_etudiant_obj = EtudiantInteret.query.filter_by(id_utilis=id_etudiant).all()
+
+    Interet_list=[]
+    for ieo in Interet_etudiant_obj:
+        interet_obj=Interet.query.get(ieo.id_interet)
+        if interet_obj:
+            Interet_list.append(interet_obj.interet)
+    return Interet_list
+    
+    

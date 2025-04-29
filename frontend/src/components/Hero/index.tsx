@@ -61,7 +61,7 @@ const Hero = () => (
       </div>
     </div>
 
-    {/* <section id="scraper-test" className="bg-gray-50 py-16 dark:bg-gray-900">
+    <section id="scraper-test" className="bg-gray-50 py-16 dark:bg-gray-900">
        <div className="container mx-auto max-w-6xl px-4">
          <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 dark:text-white">
            Test du Scraper
@@ -69,7 +69,7 @@ const Hero = () => (
  
          <Scraper />   
        </div>
-     </section> */}
+     </section>
 
   </section>
 

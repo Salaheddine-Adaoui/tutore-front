@@ -5,7 +5,7 @@ pip install pypdf
 pip install langchain
 pip install -U langchain-community
 
-pip install spacy==3.6.1
+pip install flask-cors
 
 For Database 
 username : admin

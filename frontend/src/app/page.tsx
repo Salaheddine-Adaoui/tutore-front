@@ -3,9 +3,9 @@
 
 import ScrollUp from "@/components/Common/ScrollUp";
 import Hero from "@/components/Hero";
-import Pricing from "@/components/Pricing";
-import Testimonials from "@/components/Testimonials";
-import Video from "@/components/Video";
+//import Pricing from "@/components/Pricing";
+// import Testimonials from "@/components/Testimonials";
+// import Video from "@/components/Video";
 import Dashboard from "../components/Dashboard";
 //import Chatbot from "../components/Chatbot1"; // Import Chatbot
 import { Metadata } from "next";

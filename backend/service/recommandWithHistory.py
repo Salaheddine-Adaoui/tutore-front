@@ -12,7 +12,7 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "static" / "dataCsv"
 DEFAULT_HISTORY = DATA_DIR / "history.csv"
-DEFAULT_DATASET = DATA_DIR / "UdemyCleanedTitle.csv"
+DEFAULT_DATASET = DATA_DIR / "udemyfreebies_courses.csv"
 
 def _load_df():
     """Charge le dataset de formations depuis CSV."""
@@ -25,7 +25,7 @@ def recommend_from_history(
     # the code below support from Version 3.10 and newest
     # history_csv: str | Path | None = None,  
     history_csv: Union[str, Path, None] = None,
-    k: int = 10
+    k: int = 3
     ) -> pd.DataFrame:
     """
     Recommande les k formations les plus proches du centroïde des formations visitées.
@@ -86,13 +86,14 @@ def recommend_from_history(
     recs['similarity'] = sims[best_idx]
 
     return recs[[
-        'id_formation',
-        'title',
-        'similarity',
-        'link',
-        'price',
-        'enrolled'
-    ]]
+    'id_formation',
+    'title',
+    'similarity',
+    'link',
+    'price',
+    'enrolled',
+    'image'          # ← on ajoute la colonne image
+]]
 
 # Test local
 if __name__ == "__main__":

@@ -79,8 +79,6 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
     options.add_argument("--lang=fr-FR")
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
-
-
     # options.add_argument("--headless")  # enable if you want headless Chrome
 
     driver = webdriver.Chrome(service=service, options=options)

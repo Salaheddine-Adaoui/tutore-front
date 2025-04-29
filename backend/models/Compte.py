@@ -1,4 +1,5 @@
 from models import db 
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Compte(db.Model):
     __tablename__ = 'compte'
@@ -13,3 +14,9 @@ class Compte(db.Model):
 
     etudiant  = db.relationship('Etudiant',
                                  back_populates='compte')
+    
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)

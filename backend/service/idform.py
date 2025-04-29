@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "static" / "dataCsv"
 # Charger ton fichier CSV (remplace le chemin si besoin)
-DEFAULT_DATASET = DATA_DIR / "UdemyCleanedTitle.csv"
+DEFAULT_DATASET = DATA_DIR / "udemyfreebies_courses.csv"
 csv_path = DEFAULT_DATASET 
 df = pd.read_csv(csv_path)
 

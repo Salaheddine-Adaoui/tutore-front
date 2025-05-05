@@ -11,3 +11,4 @@ from .Historique        import Historique
 from .For_test_table    import TestTable
 from .password_reset_codes import PasswordResetCode
 from .Formation import Formation
+from .Visited import Visited

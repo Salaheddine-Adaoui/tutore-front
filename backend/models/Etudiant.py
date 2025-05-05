@@ -9,14 +9,11 @@ class Etudiant(db.Model):
     prenom      = db.Column(db.String(100), nullable=False)
 
     # one‑to‑one → Compte
-    compte      = db.relationship('Compte',
-                                   uselist=False,
-                                   back_populates='etudiant')
+    compte = db.relationship('Compte',  uselist=False, back_populates='etudiant')
 
     # one‑to‑many → Historique
     historiques = db.relationship('Historique', back_populates='etudiant')
 
     # many‑to‑many → Interet via EtudiantInteret
     EtudiantInterets    = db.relationship('EtudiantInteret',back_populates='etudiants')
-    
-    
+    visits = db.relationship('Visited', back_populates='etudiant', cascade='all, delete-orphan')

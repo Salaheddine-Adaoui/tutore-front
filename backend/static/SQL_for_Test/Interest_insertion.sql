@@ -1,0 +1,18 @@
+INSERT INTO interet (interet) VALUES
+('Big Data'),
+('Développement informatique'),
+('Data Analytics'),
+('Machine Learning'),
+('AI'),
+('Devops'),
+('Cyber Sécurité'),
+('Réseaux Informatiques (Networking)'),
+('Sécurité Réseaux (Network Security)'),
+('Génie des Procédés Chimiques'),
+('Énergie Renouvelable'),
+('Traitement des Eaux et Dépollution'),
+('Gestion des Déchets et Économie Circulaire'),
+('Électronique (Analogique et Numérique)'),
+('Électrotechnique (Machines et Systèmes Électriques)'),
+('Automatismes et Commande des Systèmes'),
+('Réseaux Électriques et Smart Grids');

@@ -2,13 +2,13 @@ from flask_cors import CORS
 # from pathlib import Path
 import os, time
 from datetime import date
-from flask import Flask, jsonify, send_file, request
+from flask import Flask, jsonify, send_file, request , current_app
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
-
 from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
+from service.customDashbord import get_dashboard_stats
 
 from flask_cors import CORS
 
@@ -288,6 +288,19 @@ def saveInteret():
 
 
 
+## Dashbord Static 
+@app.route("/dashboard/<int:id_etudiant>", methods=["GET"])
+def dashboard_api(id_etudiant: int):
+    """
+    GET /dashboard/3
+    Returns JSON with totals + three breakdowns.
+    """
+    try:
+        stats = get_dashboard_stats(id_etudiant)
+        return jsonify(stats), 200
+    except Exception as e:
+        current_app.logger.exception("Dashboard error")
+        return jsonify({"error": str(e)}), 500
 
 
 # -----------------------------------------------------------

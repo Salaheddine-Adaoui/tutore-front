@@ -54,7 +54,6 @@ def getEtudiant_Interet1(id_etudiant):
         return []
 
     # On récupère les noms des intérêts via la colonne 'interet'
-    print("test=========, ",[interet.interets.interet for interet in etudiant.EtudiantInterets])
     return [interet.interets.interet for interet in etudiant.EtudiantInterets]
 
 # genertae code 

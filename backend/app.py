@@ -13,8 +13,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
 
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
-
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
+from service.customDashbord import get_dashboard_stats
 from flask_cors import CORS
 
 from models.Historique import Historique
@@ -293,6 +293,7 @@ def saveInteret():
     email = request.args.get('email')
     interest = request.get_json().get('interet')
     return save_interet(email,interest)
+
 @app.route("/recommend_courses", methods=["GET"])
 def recommend_courses():
     # 1) récupérer l'id (1 par défaut si absent)

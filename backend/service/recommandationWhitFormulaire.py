@@ -74,5 +74,5 @@ def recommend_from_interests(user_interests: list[str], k: int = 3) -> pd.DataFr
     best_idx = np.argsort(sims)[::-1][:k]
     recs = df.iloc[best_idx].copy()
     recs['similarity'] = sims[best_idx]
-
+    print("hi recommend from")
     return recs[['id_formation', 'title', 'similarity', 'link', 'price', 'enrolled']]

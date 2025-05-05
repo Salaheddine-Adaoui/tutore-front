@@ -1,3 +1,8 @@
+
+from flask import request, jsonify
+from models.Historique import Historique
+from service.recommandWithHistory import recommend_from_history
+from service.recommandationWhitFormulaire import recommend_from_interests
 from flask_cors import CORS
 # from pathlib import Path
 import os, time
@@ -8,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
 
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
 
 from flask_cors import CORS
 
@@ -269,11 +274,14 @@ def delete_history_for_student(id_etudiant: int):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 # recommndation par formulaire 
-@app.route('/recommndation_formualire',methods=['POST'])
+@app.route('/recommndation_formualire', methods=['GET'])
 def recommandation_formualire():
-    email= request.args.get('email')
-    interet = getEtudiant_Interet(email)
-    return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
+    id_etudiant = request.args.get('id_etudiant')  # lire depuis l'URL
+    if not id_etudiant:
+        return jsonify({'error': 'id_etudiant est requis'}), 400
+
+    interets = getEtudiant_Interet1(id_etudiant)
+    return jsonify(recommend_from_interests(interets).to_dict(orient='records'))
 
 
 @app.route('/saveInteret',methods=['POST'])
@@ -281,7 +289,25 @@ def saveInteret():
     email = request.args.get('email')
     interest = request.get_json().get('interet')
     return save_interet(email,interest)
+@app.route("/recommend_courses", methods=["GET"])
+def recommend_courses():
+    # 1) récupérer l'id (1 par défaut si absent)
+    id_etudiant = request.args.get("id_etudiant", default=1, type=int)
 
+    # 2) compter le nb d’entrées d’historique
+    hist_count = Historique.query.filter_by(id_etudiant=id_etudiant).count()
+
+    # 3) choisir la méthode de recommandation
+    if hist_count > 0:
+        # on a de l’historique → on utilise recommend_from_history
+        recs_df = recommend_from_history(history_csv=None, k=3)
+    else:
+        # pas d’historique → on prend les centres d’intérêt
+        interests = getEtudiant_Interet1(id_etudiant)
+        recs_df = recommend_from_interests(interests, k=3)
+
+    # 4) renvoyer en JSON
+    return jsonify(recs_df.to_dict(orient="records"))
 
 
 

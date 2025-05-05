@@ -7,13 +7,13 @@ from flask_cors import CORS
 # from pathlib import Path
 import os, time
 from datetime import date
-from flask import Flask, jsonify, send_file, request
+from flask import Flask, jsonify, send_file, request , current_app
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
 
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
 
 from flask_cors import CORS
 
@@ -227,6 +227,7 @@ def register():
     return Register(nom, prenom, email, password)
 
 
+
 # login (emial password )
 @app.route('/login',methods=['POST'])
 def loginn():
@@ -254,6 +255,7 @@ def password_update():
     email = request.args.get('email')
     return update_password(email,password)
 
+
 @app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])
 @cross_origin()                               # ← retire si CORS est déjà global
 def delete_history_for_student(id_etudiant: int):
@@ -273,6 +275,8 @@ def delete_history_for_student(id_etudiant: int):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+    
 # recommndation par formulaire 
 @app.route('/recommndation_formualire', methods=['GET'])
 def recommandation_formualire():
@@ -310,16 +314,24 @@ def recommend_courses():
     return jsonify(recs_df.to_dict(orient="records"))
 
 
+## Dashbord Static 
+@app.route("/dashboard/<int:id_etudiant>", methods=["GET"])
+def dashboard_api(id_etudiant: int):
+    """
+    GET /dashboard/3
+    Returns JSON with totals + three breakdowns.
+    """
+    try:
+        stats = get_dashboard_stats(id_etudiant)
+        return jsonify(stats), 200
+    except Exception as e:
+        current_app.logger.exception("Dashboard error")
+        return jsonify({"error": str(e)}), 500
 
 
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------
-# app.py (ajoutez après vos autres routes)
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

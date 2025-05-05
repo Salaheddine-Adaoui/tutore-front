@@ -12,8 +12,7 @@ class Compte(db.Model):
     password  = db.Column(db.String(128), nullable=False)
     role      = db.Column(db.String(50), nullable=False)
 
-    etudiant  = db.relationship('Etudiant',
-                                 back_populates='compte')
+    etudiant  = db.relationship('Etudiant',back_populates='compte')
     
     def set_password(self, password):
         self.password = generate_password_hash(password)

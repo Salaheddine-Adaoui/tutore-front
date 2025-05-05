@@ -222,6 +222,7 @@ def register():
     return Register(nom, prenom, email, password)
 
 
+
 # login (emial password )
 @app.route('/login',methods=['POST'])
 def loginn():
@@ -249,6 +250,7 @@ def password_update():
     email = request.args.get('email')
     return update_password(email,password)
 
+
 @app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])
 @cross_origin()                               # ← retire si CORS est déjà global
 def delete_history_for_student(id_etudiant: int):
@@ -268,6 +270,8 @@ def delete_history_for_student(id_etudiant: int):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+    
 # recommndation par formulaire 
 @app.route('/recommndation_formualire',methods=['POST'])
 def recommandation_formualire():
@@ -289,11 +293,6 @@ def saveInteret():
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------
-# app.py (ajoutez après vos autres routes)
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

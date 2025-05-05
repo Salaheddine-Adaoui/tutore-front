@@ -5,7 +5,8 @@ import re
 import nltk
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-from typing import Union
+from typing import List, Union
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
@@ -48,7 +49,7 @@ def _load_df():
     
     return df
 
-def recommend_from_interests(user_interests: list[str], k: int = 3) -> pd.DataFrame:
+def recommend_from_interests(user_interests: List[str], k: int = 3) -> pd.DataFrame:
     """Recommande des formations basées sur la liste d'intérêts de l'utilisateur."""
     if not user_interests:
         raise ValueError("La liste des intérêts ne peut pas être vide.")

@@ -52,7 +52,7 @@ const Formular = () => {
     api.post(`/saveInteret?email=${email}`,obj)
     .then(res=>{
       console.log(res.data)
-      router.push('/')
+      router.push('/signin')
     })
     .catch(err=>console.log(err.response.data))
   }

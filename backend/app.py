@@ -5,8 +5,9 @@ from datetime import date
 from flask import Flask, jsonify, send_file, request
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
+from service.historiwqueService import *
 
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
+from service.authentication import *
 
 from flask_cors import CORS
 
@@ -36,7 +37,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5432/projet_tutore"
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_PORT'] = 587            
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'adaouisalah552@gmail.com'
 app.config['MAIL_PASSWORD'] = 'sukqpindpewvhhoh'  # Utilise un mot de passe d'application si Gmail
@@ -68,6 +69,25 @@ def index():
         <br><br>
         <a href="/download">Télécharger CSV</a>
     """
+
+@app.route('/allinter',methods=['GET'])
+def getallinter():
+    return get_all_interet()
+
+# scraping endpoint 
+@app.route('/scr')
+def scr():
+    categorie_list=get_all_interet()
+    l=[]
+    for i in categorie_list:
+        i= i.replace(" ","%20")
+        for j in range(1,11):
+            l.append( f"https://www.udemyfreebies.com/search/{i}/{j}")
+    try:
+        courses = scrape_udemyfreebies(l)
+        return jsonify({"status": "success", "data": courses}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @app.route("/scrape")
@@ -216,10 +236,15 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    return Register(nom, prenom, email, password)
+    return Register(nom, prenom, email, password,mail)
+
+@app.route('/confirm/<token>')
+def confirm_regisrtation_endp(token):
+    return confirm_registartion(token)
 
 
-# login (emial password )
+
+# login (email password )
 @app.route('/login',methods=['POST'])
 def loginn():
     data = request.json
@@ -249,8 +274,8 @@ def password_update():
 # recommndation par formulaire 
 @app.route('/recommndation_formualire',methods=['POST'])
 def recommandation_formualire():
-    email= request.args.get('email')
-    interet = getEtudiant_Interet(email)
+    id= request.args.get('id')
+    interet = getEtudiant_Interet(id)
     return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
 
 
@@ -262,7 +287,11 @@ def saveInteret():
 
 
 
-
+# test
+@app.route('/getHistorique',methods=['GET'])
+def get_hist():
+    email=request.args.get('email')
+    return get_all(email)
 
 # -----------------------------------------------------------
 # Entrypoint

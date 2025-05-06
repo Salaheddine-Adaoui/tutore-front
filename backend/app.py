@@ -12,8 +12,9 @@ import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
-
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
+from werkzeug.security import check_password_hash
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
+from service.customDashbord import get_dashboard_stats
 
 from flask_cors import CORS
 
@@ -28,6 +29,7 @@ from service.recommandationWhitFormulaire import recommend_from_interests
 from service.recommandWithHistory import recommend_from_history
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
 
+from models.Administrateur import Administrateur
 
 
 # -----------------------------------------------------------
@@ -77,7 +79,31 @@ def index():
         <a href="/download">Télécharger CSV</a>
     """
 
+@app.route('/admin/login', methods=['POST'])
+def login_admin():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
 
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
+    admin = Administrateur.query.filter_by(email=email).first()
+    if not admin:
+        return jsonify({"error": "Admin not found"}), 404
+
+    if not check_password_hash(admin._password_hash, password):
+        return jsonify({"error": "Incorrect password"}), 401
+
+    return jsonify({
+        "message": "Login successful",
+        "admin": {
+            "id": admin.id_administrateur,
+            "email": admin.email,
+            "role": admin.role
+        }
+    }), 200
+    
 @app.route("/scrape")
 def scrape():
     """
@@ -248,12 +274,12 @@ def chek_codee():
     local_storage_code=request.args.get('code')
     return chek_code(code,local_storage_code)
 
-# update password 
 @app.route('/updatepassword',methods=['POST'])
 def password_update():
     password = request.args.get('password')
     email = request.args.get('email')
     return update_password(email,password)
+
 
 
 @app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])

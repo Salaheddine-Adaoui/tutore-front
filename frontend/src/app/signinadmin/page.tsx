@@ -83,17 +83,8 @@ const SigninPageadmin = () => {
                   </div>
 
                   <div className="mb-8 flex flex-col justify-between sm:flex-row sm:items-center">
-                    <div className="mb-4 sm:mb-0">
-                      <label htmlFor="checkboxLabel" className="flex items-center text-sm font-medium text-body-color">
-                        <input type="checkbox" className="mr-2" />
-                        Keep me signed in
-                      </label>
-                    </div>
-                    <div>
-                      <a href="#" className="text-sm font-medium text-primary hover:underline" onClick={() => setModalForgetOpen(true)}>
-                        Forgot Password?
-                      </a>
-                    </div>
+                 
+             
                   </div>
 
                   <div className="mb-6">

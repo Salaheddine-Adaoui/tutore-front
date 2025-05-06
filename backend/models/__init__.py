@@ -10,4 +10,10 @@ from .EtudiantInteret  import EtudiantInteret
 from .Historique        import Historique
 from .For_test_table    import TestTable
 from .password_reset_codes import PasswordResetCode
+
 from .formations import Course
+
+from .Formation import Formation
+from .Visited import Visited
+from .Administrateur import Administrateur
+

@@ -6,6 +6,7 @@ pip install langchain
 pip install -U langchain-community
 
 pip install flask-cors
+pip install nltk
 
 For Database 
 username : admin

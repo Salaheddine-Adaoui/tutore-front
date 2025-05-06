@@ -1,6 +1,7 @@
 from models import db
 
 class Historique(db.Model):
+
     _tablename_ = 'historique'
 
     id_hist = db.Column(db.Integer, primary_key=True)
@@ -17,3 +18,4 @@ class Historique(db.Model):
     etudiant  = db.relationship('Etudiant',   back_populates='historiques')
     interet   = db.relationship('Interet',    back_populates='historiques')
     formation = db.relationship('Course',  back_populates='historiques')
+

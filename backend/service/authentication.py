@@ -88,6 +88,13 @@ def login(email,password):
     else : return jsonify({'error':"email not exist"}),400
 
 
+def getEtudiant_Interet1(id_etudiant):
+    etudiant = Etudiant.query.get(id_etudiant)
+    if not etudiant:
+        return []
+
+    # On récupère les noms des intérêts via la colonne 'interet'
+    return [interet.interets.interet for interet in etudiant.EtudiantInterets]
 
 # genertae code 
 

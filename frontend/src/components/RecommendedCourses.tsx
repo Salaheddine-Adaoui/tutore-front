@@ -1,10 +1,10 @@
 "use client";
-
-import { useRecommendedFromHistory } from "@/lib/hooks/useRecommendedFromHistory";
 import React from "react";
+import { useRecommendedCourses } from "@/lib/hooks/useRecommendedCourses";
 
 export default function RecommendedCourses() {
-  const { data, isLoading, error } = useRecommendedFromHistory();
+  // 1) on récupère directement la liste “magique”
+  const { data, isLoading, error } = useRecommendedCourses(1); // id 1 par défaut
 
   return (
     <section className="bg-[#0B0D17] text-white py-12">
@@ -14,7 +14,11 @@ export default function RecommendedCourses() {
             Formations recommandées pour vous
           </h2>
           <p className="text-gray-300 max-w-xl mx-auto">
-            Basé sur votre historique d’apprentissage.
+            {isLoading
+              ? "Chargement…"
+              : error
+              ? `Erreur : ${error}`
+              : "Basé sur votre historique ou vos centres d’intérêt."}
           </p>
         </div>
 
@@ -24,7 +28,7 @@ export default function RecommendedCourses() {
           <p className="text-center text-red-500">Erreur : {`${error}`}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {data?.map((course: any, i: number) => (
+            {data.map((course: any, i: number) => (
               <a
                 key={i}
                 href={course.link}
@@ -32,17 +36,14 @@ export default function RecommendedCourses() {
                 rel="noopener noreferrer"
                 className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
               >
-                {/* 1. Conteneur image */}
                 <div className="w-full h-48 bg-gray-800 flex-shrink-0">
                   <img
-                    src={course.image}
+                    src={course.image || course.image_link}
                     alt={course.title}
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* 2. Contenu */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -60,9 +61,7 @@ export default function RecommendedCourses() {
                       {course.enrolled}
                     </p>
                   </div>
-                  <div>
-                    {/* Vous pouvez ajouter un bouton ou autre CTA ici */}
-                  </div>
+                  {/* CTA si besoin */}
                 </div>
               </a>
             ))}

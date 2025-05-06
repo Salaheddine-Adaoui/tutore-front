@@ -84,7 +84,7 @@ def recommend_from_history(
     best_idx = np.argsort(sims)[::-1][:k]
     recs = df.iloc[best_idx].copy()
     recs['similarity'] = sims[best_idx]
-
+    print("recommend history")
     return recs[[
     'id_formation',
     'title',

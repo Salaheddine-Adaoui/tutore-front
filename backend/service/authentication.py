@@ -185,10 +185,10 @@ def save_interet(email, interests):
         return jsonify({'error': f'Erreur lors de la transaction DB : {str(e)}'}), 400
 
 
-def getEtudiant_Interet(email):
-    etudiant = Etudiant.query.filter_by(email=email).first()
-    id_etudiant = etudiant.id_etudiant 
-    Interet_etudiant_obj = EtudiantInteret.query.filter_by(id_utilis=id_etudiant).all()
+def getEtudiant_Interet(id):
+    #compte = Compte.query.filter_by(email=email).first()
+    #id_etudiant = compte.id_utilis
+    Interet_etudiant_obj = EtudiantInteret.query.filter_by(id_etudiant=id).all()
 
     Interet_list=[]
     for ieo in Interet_etudiant_obj:

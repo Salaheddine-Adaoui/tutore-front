@@ -54,7 +54,10 @@ const HistoriquePage = () => {
               </div>
               )
             })
-            : null
+            :  
+            <p className="text-center text-lg text-gray-600 mt-8">
+              Aucun cours consulté pour le moment.
+            </p>
             }
           </div>
         </div>

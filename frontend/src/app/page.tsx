@@ -26,6 +26,16 @@ export default function Home() {
 
   // si besoin de email en home page concernant statistique
   const email=cokie.get('email')
+  const id=cokie.get('id')
+  const nom=cokie.get('nom')
+  const prenom=cokie.get('prenom') 
+
+  useEffect(()=>{
+    console.log(email)
+    console.log(nom)
+    console.log(id)
+    console.log(prenom)
+  },[])
 
 
 

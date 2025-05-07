@@ -83,7 +83,15 @@ const SigninPage = () => {
       await api.post('/login',form)
       .then(res=>{
         const email=res.data.email
+        const id_compte=res.data.id_compte
+        const id=res.data.id
+        const nom=res.data.nom
+        const prenom=res.data.prenom
         cokie.set('email', email, { path: '/' });
+        cokie.set('id_compte',id_compte)
+        cokie.set('id',id_compte)
+        cokie.set('nom',nom)
+        cokie.set('prenom',prenom)
         router.push(`/`)
         setSucc({...succ,status:true,msg:res.data.succes})
         setErr({...err,status:false})

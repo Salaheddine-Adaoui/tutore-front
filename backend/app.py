@@ -16,7 +16,7 @@ from models.Historique import Historique
 from models import db
 from service.scraper import scrape_udemyfreebies, TARGET_URLS, CSV_PATH
 from service.recommandWithSearch import semantic_search
-from service.chatbot import genrer_reponse
+#from service.chatbot import genrer_reponse
 from flask_mail import Mail
 from models import db
 from service.recommandationWhitFormulaire import recommend_from_interests
@@ -36,7 +36,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 # -----------------------------------------------------------
 # postgres database setup  
 # -----------------------------------------------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5432/projet_tutore"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5433/projet_tutore"
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -54,7 +54,6 @@ db.init_app(app)
 # 5. create tables if they don't exist
 with app.app_context():
     db.create_all()
-
 
 
 
@@ -132,15 +131,15 @@ def recommend_history_api():
         return jsonify({"error": str(e)}), 400
     
 
-@app.route('/getChatRespend',methods=['POST'])
-def ChatbotRes():
-    data=request.get_json()
-    question=data.get('question') if data else None
-    if question:
-        rep=genrer_reponse(question)
-        return jsonify({'reponse':rep}),200
-    else:
-        return jsonify({'error':"question field is mandatory"}),400
+#@app.route('/getChatRespend',methods=['POST'])
+#def ChatbotRes():
+ #   data=request.get_json()
+  #  question=data.get('question') if data else None
+   # if question:
+    ##    rep=genrer_reponse(question)
+      #  return jsonify({'reponse':rep}),200
+    #else:
+     #   return jsonify({'error':"question field is mandatory"}),400
 
     
 

@@ -2,7 +2,8 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import re
-import nltk
+
+
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from typing import Union
@@ -10,9 +11,9 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 # Téléchargement nécessaire
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('omw-1.4')
+#nltk.download('stopwords')
+#nltk.download('wordnet')
+#nltk.download('omw-1.4')
 
 # Chemins
 BASE_DIR = Path(__file__).resolve().parent.parent

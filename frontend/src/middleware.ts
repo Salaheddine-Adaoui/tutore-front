@@ -2,16 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const email = request.cookies.get('email');
-
-  if (!email) {
-    // Redirection vers /signin si pas connecté
-    return NextResponse.redirect(new URL('/signin', request.url));
-  }
-  return NextResponse.next(); // autorise l'accès
+  // Aucune redirection, laisser passer toute requête
+  return NextResponse.next();
 }
 
-// Appliquer seulement à la page d'accueil ("/")
+// Appliquer à toutes les pages, aucune restriction
 export const config = {
-    matcher: ["/", "/Recommandation", "/historique",'/formualire'],
+  matcher: ['/', '/Recommandation', '/historique', '/formualire'], // Applique cette logique à toutes les pages que tu veux, mais ici c'est pour toutes.
 };

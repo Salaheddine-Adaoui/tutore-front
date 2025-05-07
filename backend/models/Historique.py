@@ -16,6 +16,5 @@ class Historique(db.Model):
 
     # Relationships
     etudiant  = db.relationship('Etudiant',   back_populates='historiques')
-    interet   = db.relationship('Interet',    back_populates='historiques')
     formation = db.relationship('Course',  back_populates='historiques')
 

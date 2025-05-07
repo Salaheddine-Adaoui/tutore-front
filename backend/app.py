@@ -350,12 +350,12 @@ def recommandation_formualire():
     interet = getEtudiant_Interet(id)
     return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
 
-    id_etudiant = request.args.get('id_etudiant')  # lire depuis l'URL
-    if not id_etudiant:
-        return jsonify({'error': 'id_etudiant est requis'}), 400
+    #id_etudiant = request.args.get('id_etudiant')  # lire depuis l'URL
+    #if not id_etudiant:
+    #    return jsonify({'error': 'id_etudiant est requis'}), 400
 
-    interets = getEtudiant_Interet1(id_etudiant)
-    return jsonify(recommend_from_interests(interets).to_dict(orient='records'))
+    #interets = getEtudiant_Interet1(id_etudiant)
+    #return jsonify(recommend_from_interests(interets).to_dict(orient='records'))
 
 
 

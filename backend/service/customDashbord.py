@@ -3,7 +3,7 @@
 from datetime import datetime
 from sqlalchemy import func
 from models import db
-from models.Formation import Formation
+from models.formations import Course
 from models.Historique import Historique
 from models.Visited import Visited
 
@@ -20,7 +20,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
 
     # — totals —
     total_formations = db.session.query(
-        func.count(Formation.id_formation)
+        func.count(Course.id_formation)
     ).scalar() or 0
 
     visited_count = db.session.query(
@@ -56,7 +56,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
     # — likes by category (join Historique → Formation) —
     raw_likes = (
         db.session.query(
-            Formation.category,
+            Course.category,
             func.count(Historique.id_hist).label("cnt")
         )
         .join(Historique.formation)
@@ -64,7 +64,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
           Historique.id_etudiant == id_etudiant,
           Historique.Etat.ilike("like")
         )
-        .group_by(Formation.category)
+        .group_by(Course.category)
         .all()
     )
     likes_by_category = [
@@ -75,12 +75,12 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
     # — visits by category (sum nbr_visite) —
     raw_visits_cat = (
         db.session.query(
-            Formation.category,
+            Course.category,
             func.coalesce(func.sum(Historique.nbr_visite), 0).label("sumv")
         )
         .join(Historique.formation)
         .filter(Historique.id_etudiant == id_etudiant)
-        .group_by(Formation.category)
+        .group_by(Course.category)
         .all()
     )
     visits_by_category = [

@@ -1,8 +1,9 @@
 // src/components/Dashboard.tsx
 
-"use client"; // Only needed if you use Next.js App Router and require client-side rendering.
+"use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { api } from "@/lib/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,7 +18,7 @@ import {
 } from "chart.js";
 import { Line, Bar, Pie } from "react-chartjs-2";
 
-// Register Chart.js modules (includes additional modules for Bar and Pie charts)
+// Register Chart.js modules
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,28 +31,80 @@ ChartJS.register(
   Legend
 );
 
+type MonthData = { month: string; count: number };
+type CatData = { category: string; count: number };
+
 export default function Dashboard() {
-  // Line Chart Data (Revenue Growth)
+  // Get the logged‐in student ID (ensure you set this on login!)
+
+  // const etudiantId = parseInt(localStorage.getItem("id_etudiant") || "0", 10);
+  const etudiantId =1
+  
+  // Totals
+  const [totals, setTotals] = useState({
+    total_formations: 0,
+    visited_count: 0,
+    liked_count: 0,
+  });
+
+  // Breakdown data
+  const [visitsByMonth, setVisitsByMonth] = useState<MonthData[]>([]);
+  const [likesByCat, setLikesByCat] = useState<CatData[]>([]);
+  const [visitsByCat, setVisitsByCat] = useState<CatData[]>([]);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    if (!etudiantId) return;
+    api
+      .get(`/dashboard/${etudiantId}`)
+      .then((res) => {
+        const d = res.data;
+        setTotals({
+          total_formations: d.total_formations,
+          visited_count: d.visited_count,
+          liked_count: d.liked_count,
+        });
+        setVisitsByMonth(d.visits_by_month);
+        setLikesByCat(d.likes_by_category);
+        setVisitsByCat(d.visits_by_category);
+      })
+      .catch((err) => console.error("Failed to load dashboard stats", err));
+  }, [etudiantId]);
+
+  // Color palette for pie chart
+  const pieColors = [
+    "#93C5FD", // light blue
+    "#60A5FA", // medium blue
+    "#3B82F6", // darker blue
+    "#2563EB",
+    "#1E40AF",
+    "#1E3A8A",
+  ];
+
+  // 1) Visits over time (Line)
   const lineData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    labels: visitsByMonth.map((d) => d.month),
     datasets: [
       {
-        label: "Sales",
-        data: [150, 200, 300, 250, 450, 500, 600],
-        borderColor: "#38BDF8", // Tailwind sky-400
+        label: "Visites mensuelles",
+        data: visitsByMonth.map((d) => d.count),
+        borderColor: "#38BDF8",
         backgroundColor: "rgba(56, 189, 248, 0.1)",
         tension: 0.4,
         fill: true,
       },
     ],
   };
-
   const lineOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "nombre de visite de site", color: "#fff" },
+      title: {
+        display: true,
+        text: "Nombre de visites par mois",
+        color: "#fff",
+      },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
     scales: {
@@ -66,24 +119,27 @@ export default function Dashboard() {
     },
   };
 
-  // Bar Chart Data (Monthly Purchases) with blue color replacing yellow
+  // 2) Likes by category (Bar)
   const barData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: likesByCat.map((d) => d.category),
     datasets: [
       {
-        label: "Purchases",
-        data: [80, 120, 160, 140, 190, 220],
-        backgroundColor: "#60A5FA", // Different blue (Tailwind blue-400)
+        label: "Likes",
+        data: likesByCat.map((d) => d.count),
+        backgroundColor: "#60A5FA",
       },
     ],
   };
-
   const barOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "nombre de formation aimée par catégorie", color: "#fff" },
+      title: {
+        display: true,
+        text: "Nombre de formations aimées par catégorie",
+        color: "#fff",
+      },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
     scales: {
@@ -98,23 +154,25 @@ export default function Dashboard() {
     },
   };
 
-  // Pie Chart Data (User Distribution) with three different shades of blue
+  // 3) Visits by category (Pie) with explicit colors
   const pieData = {
-    labels: ["Desktop", "Mobile", "Tablet"],
+    labels: visitsByCat.map((d) => d.category),
     datasets: [
       {
-        label: "User Devices",
-        data: [55, 30, 15],
-        backgroundColor: ["#93C5FD", "#60A5FA", "#3B82F6"], // Three blue shades
+        data: visitsByCat.map((d) => d.count),
+        backgroundColor: visitsByCat.map((_, idx) => pieColors[idx % pieColors.length]),
         hoverOffset: 4,
       },
     ],
   };
-
   const pieOptions = {
     plugins: {
       legend: { labels: { color: "#fff" } },
-      title: { display: true, text: "nombre de visite par categories", color: "#fff" },
+      title: {
+        display: true,
+        text: "Nombre de visites par catégorie",
+        color: "#fff",
+      },
       tooltip: { bodyColor: "#000", backgroundColor: "#fff" },
     },
   };
@@ -124,33 +182,30 @@ export default function Dashboard() {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8">Dashboard</h2>
 
-        {/* Simple Stats Cards */}
+        {/* Totals */}
         <div className="grid grid-cols-1 gap-6 mb-12 sm:grid-cols-2 lg:grid-cols-3">
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-2">Formations disponibles</h3>
-            <p className="text-4xl font-bold">1,234</p>
+            <p className="text-4xl font-bold">{totals.total_formations}</p>
           </div>
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Formations visités</h3>
-            <p className="text-4xl font-bold">120</p>
+            <h3 className="text-xl font-semibold mb-2">Formations visitées</h3>
+            <p className="text-4xl font-bold">{totals.visited_count}</p>
           </div>
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-2">Formations aimées</h3>
-            <p className="text-4xl font-bold">4,560</p>
+            <p className="text-4xl font-bold">{totals.liked_count}</p>
           </div>
         </div>
 
-        {/* Charts in a Single Row */}
+        {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Line Chart */}
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
             <Line data={lineData} options={lineOptions} />
           </div>
-          {/* Bar Chart */}
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
             <Bar data={barData} options={barOptions} />
           </div>
-          {/* Pie Chart */}
           <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
             <Pie data={pieData} options={pieOptions} />
           </div>

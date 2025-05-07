@@ -1,15 +1,30 @@
+
+from flask import request, jsonify
+from models.Historique import Historique
+from service.recommandWithHistory import recommend_from_history
+from service.recommandationWhitFormulaire import recommend_from_interests
 from flask_cors import CORS
 # from pathlib import Path
 import os, time
 from datetime import date
-from flask import Flask, jsonify, send_file, request
+from flask import Flask, jsonify, send_file, request , current_app
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
+
+from service.historiwqueService import *
+
+from service.authentication import *
+
 from flask_cors import cross_origin
 from service.authentication import Register,login,remember_password,chek_code,update_password
+from werkzeug.security import check_password_hash
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
+from service.customDashbord import get_dashboard_stats
 
-from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet
 
+
+from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
+from service.customDashbord import get_dashboard_stats
 from flask_cors import CORS
 
 from models.Historique import Historique
@@ -23,6 +38,7 @@ from service.recommandationWhitFormulaire import recommend_from_interests
 from service.recommandWithHistory import recommend_from_history
 from service.for_test_service import create_test, get_all_tests, get_test, update_test, delete_test
 
+from models.Administrateur import Administrateur
 
 
 # -----------------------------------------------------------
@@ -39,7 +55,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:tutore@localhost:5433/projet_tutore"
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_PORT'] = 587            
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'adaouisalah552@gmail.com'
 app.config['MAIL_PASSWORD'] = 'sukqpindpewvhhoh'  # Utilise un mot de passe d'application si Gmail
@@ -72,6 +88,52 @@ def index():
     """
 
 
+@app.route('/allinter',methods=['GET'])
+def getallinter():
+    return get_all_interet()
+
+# scraping endpoint 
+@app.route('/scr')
+def scr():
+    categorie_list=get_all_interet()
+    l=[]
+    for i in categorie_list:
+        i= i.replace(" ","%20")
+        for j in range(1,11):
+            l.append( f"https://www.udemyfreebies.com/search/{i}/{j}")
+    try:
+        courses = scrape_udemyfreebies(l)
+        return jsonify({"status": "success", "data": courses}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/admin/login', methods=['POST'])
+def login_admin():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
+    admin = Administrateur.query.filter_by(email=email).first()
+    if not admin:
+        return jsonify({"error": "Admin not found"}), 404
+
+    if not check_password_hash(admin._password_hash, password):
+        return jsonify({"error": "Incorrect password"}), 401
+
+    return jsonify({
+        "message": "Login successful",
+        "admin": {
+            "id": admin.id_administrateur,
+            "email": admin.email,
+            "role": admin.role
+        }
+    }), 200
+    
 @app.route("/scrape")
 def scrape():
     """
@@ -218,10 +280,19 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    return Register(nom, prenom, email, password)
+    return Register(nom, prenom, email, password,mail)
 
+@app.route('/confirm/<token>')
+def confirm_regisrtation_endp(token):
+    return confirm_registartion(token)
+
+
+
+
+# login (email password )
 
 # login (emial password )
+
 @app.route('/login',methods=['POST'])
 def loginn():
     data = request.json
@@ -241,12 +312,13 @@ def chek_codee():
     local_storage_code=request.args.get('code')
     return chek_code(code,local_storage_code)
 
-# update password 
 @app.route('/updatepassword',methods=['POST'])
 def password_update():
     password = request.args.get('password')
     email = request.args.get('email')
     return update_password(email,password)
+
+
 
 @app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])
 @cross_origin()                               # ← retire si CORS est déjà global
@@ -267,12 +339,23 @@ def delete_history_for_student(id_etudiant: int):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+    
 # recommndation par formulaire 
-@app.route('/recommndation_formualire',methods=['POST'])
+@app.route('/recommndation_formualire', methods=['GET'])
 def recommandation_formualire():
-    email= request.args.get('email')
-    interet = getEtudiant_Interet(email)
+
+    id= request.args.get('id')
+    interet = getEtudiant_Interet(id)
     return jsonify(recommend_from_interests(interet).to_dict(orient='records'))
+
+    id_etudiant = request.args.get('id_etudiant')  # lire depuis l'URL
+    if not id_etudiant:
+        return jsonify({'error': 'id_etudiant est requis'}), 400
+
+    interets = getEtudiant_Interet1(id_etudiant)
+    return jsonify(recommend_from_interests(interets).to_dict(orient='records'))
+
 
 
 @app.route('/saveInteret',methods=['POST'])
@@ -281,18 +364,53 @@ def saveInteret():
     interest = request.get_json().get('interet')
     return save_interet(email,interest)
 
+@app.route("/recommend_courses", methods=["GET"])
+def recommend_courses():
+    # 1) récupérer l'id (1 par défaut si absent)
+    id_etudiant = request.args.get("id_etudiant", default=1, type=int)
 
+    # 2) compter le nb d’entrées d’historique
+    hist_count = Historique.query.filter_by(id_etudiant=id_etudiant).count()
+
+    # 3) choisir la méthode de recommandation
+    if hist_count > 0:
+        # on a de l’historique → on utilise recommend_from_history
+        recs_df = recommend_from_history(history_csv=None, k=3)
+    else:
+        # pas d’historique → on prend les centres d’intérêt
+        interests = getEtudiant_Interet1(id_etudiant)
+        recs_df = recommend_from_interests(interests, k=3)
+
+    # 4) renvoyer en JSON
+    return jsonify(recs_df.to_dict(orient="records"))
+
+
+
+# test
+@app.route('/getHistorique',methods=['GET'])
+def get_hist():
+    email=request.args.get('email')
+    return get_all(email)
+
+## Dashbord Static 
+@app.route("/dashboard/<int:id_etudiant>", methods=["GET"])
+def dashboard_api(id_etudiant: int):
+    """
+    GET /dashboard/3
+    Returns JSON with totals + three breakdowns.
+    """
+    try:
+        stats = get_dashboard_stats(id_etudiant)
+        return jsonify(stats), 200
+    except Exception as e:
+        current_app.logger.exception("Dashboard error")
+        return jsonify({"error": str(e)}), 500
 
 
 
 # -----------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------
-# app.py (ajoutez après vos autres routes)
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

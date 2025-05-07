@@ -4,6 +4,12 @@ import string
 import random
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
+import secrets
+import string
+
+def generate_token_register(length=32):
+    characters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(characters) for _ in range(length))
 
 
 
@@ -11,11 +17,12 @@ import traceback
 
 # Register 
 
-def Register(nom, prenom, email, password):
+def Register(nom, prenom, email, password,mail):
+    token=generate_token_register()
     if Compte.query.filter_by(email=email).first():
         return jsonify({'error': "this email already exists"}), 400
 
-    compte = Compte(email=email, password=password,role='ETUDIANT')
+    compte = Compte(email=email,status='disabled', password=password,role='ETUDIANT',email_token=token)
     
     etudiant = Etudiant(nom=nom, prenom=prenom, compte=compte)
 
@@ -23,12 +30,38 @@ def Register(nom, prenom, email, password):
         db.session.add(compte)
         db.session.add(etudiant)
         db.session.commit()
+
+        
+
+        # Créer lien de confirmation
+        confirm_url = f"http://localhost:5000/confirm/{token}"
+     
+
+        # Envoyer l'e-mail
+        msg = Message("Confirme ton email", sender="votre.email@gmail.com", recipients=[email])
+        msg.body = f"Salut {prenom}, clique sur ce lien pour activer ton compte : {confirm_url}"
+        mail.send(msg)
+
+
         return jsonify({'success': "user created successfully"}), 200
     except Exception as e:
         
         return jsonify({'error': f"user not created {str(e)}", 'message': str(e)}), 400
 
+# confirmation de register 
+def confirm_registartion(token):
+
+    c = Compte.query.filter_by(email_token=token).first()
+    if not c :
+        return jsonify({'erorr':"ce tokekn n'exist pas"}),400
+    if c.status=='enabled':
+        return jsonify({'error':'ce compte deja enabled'}),400
     
+    c.status='enabled'
+    c.email_token = None
+    db.session.commit()
+    return jsonify({'succes':'confirmatio whit succes'}),200
+
 
 
 # login
@@ -36,18 +69,32 @@ def Register(nom, prenom, email, password):
 def login(email,password):
     compte=Compte.query.filter_by(email=email).first()
     if compte:
-        if compte.password == password:
+        if compte.password == password and compte.status=='enabled':
             return jsonify({
                 'succes':'login succesfuly',
-                'email':compte.email
+                'email':compte.email,
+                'id':compte.id_utilis,
+                'nom':compte.etudiant.nom,
+                'prenom':compte.etudiant.prenom,
+                'id_compte':compte.id_compte
             }),200
-        return jsonify({
-            'error':"password is not true"
-        }),400
+        else:
+            if compte.password!=password:
+                return jsonify({
+                    'error':"password is not true"
+                }),400
+            else: return jsonify({'error':'this account is disabled , please confirm registration to signin'}),400
         
     else : return jsonify({'error':"email not exist"}),400
 
 
+def getEtudiant_Interet1(id_etudiant):
+    etudiant = Etudiant.query.get(id_etudiant)
+    if not etudiant:
+        return []
+
+    # On récupère les noms des intérêts via la colonne 'interet'
+    return [interet.interets.interet for interet in etudiant.EtudiantInterets]
 
 # genertae code 
 
@@ -139,7 +186,7 @@ def save_interet(email, interests):
 
 
 def getEtudiant_Interet(email):
-    etudiant = Etudiant.query.filter_by(email).first()
+    etudiant = Etudiant.query.filter_by(email=email).first()
     id_etudiant = etudiant.id_etudiant 
     Interet_etudiant_obj = EtudiantInteret.query.filter_by(id_utilis=id_etudiant).all()
 
@@ -149,5 +196,12 @@ def getEtudiant_Interet(email):
         if interet_obj:
             Interet_list.append(interet_obj.interet)
     return Interet_list
+
+def get_all_interet():
+    inter=Interet.query.all()
+    list=[]
+    for i in inter:
+        list.append(i.interet)
+    return list
     
     

@@ -5,6 +5,7 @@ from service.recommandWithHistory import recommend_from_history
 from service.recommandationWhitFormulaire import recommend_from_interests
 from flask_cors import CORS
 # from pathlib import Path
+from service.admin_auth import change_password
 import os, time
 from datetime import date
 from flask import Flask, jsonify, send_file, request , current_app
@@ -45,7 +46,7 @@ from models.Administrateur import Administrateur
 # Flask setup  
 # -----------------------------------------------------------
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='templates')
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 
@@ -406,6 +407,16 @@ def dashboard_api(id_etudiant: int):
     except Exception as e:
         current_app.logger.exception("Dashboard error")
         return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/updateadminpassword',methods=['POST'])
+def updateAdminPassword():
+    email=request.args.get('email')
+    obj=request.get_json()
+    passw=obj.get('password')
+    new=obj.get('new')
+    confirm=obj.get('confirm')
+    return change_password(email,passw,new,confirm)
 
 
 

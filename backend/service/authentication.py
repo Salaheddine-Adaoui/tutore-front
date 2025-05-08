@@ -1,11 +1,12 @@
 from models import Etudiant,db,Compte,PasswordResetCode,Interet,EtudiantInteret
-from flask import jsonify
+from flask import jsonify,render_template
 import string
 import random
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
 import secrets
 import string
+
 
 def generate_token_register(length=32):
     characters = string.ascii_letters + string.digits
@@ -60,7 +61,7 @@ def confirm_registartion(token):
     c.status='enabled'
     c.email_token = None
     db.session.commit()
-    return jsonify({'succes':'confirmatio whit succes'}),200
+    return render_template('confirmation_succes.html'), 200
 
 
 

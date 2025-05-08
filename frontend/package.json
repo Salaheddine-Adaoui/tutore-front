@@ -14,6 +14,7 @@
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
     "chartjs": "^0.3.24",
+    "cors": "^2.8.5",
     "eslint": "^8.56.0",
     "eslint-config-next": "15.1.6",
     "framer-motion": "^12.6.3",

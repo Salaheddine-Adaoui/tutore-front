@@ -95,7 +95,8 @@ def getallinter():
 # scraping endpoint 
 @app.route('/scr')
 def scr():
-    categorie_list=get_all_interet()
+    #categorie_list=get_all_interet()
+    categorie_list=['data','devops']
     l=[]
     for i in categorie_list:
         i= i.replace(" ","%20")
@@ -358,12 +359,17 @@ def recommandation_formualire():
 
 
 
-@app.route('/saveInteret',methods=['POST'])
+@app.route('/saveInteret', methods=['POST'])
 def saveInteret():
+    print("✅ Route /saveInteret active")
+    print("Méthode :", request.method)
     email = request.args.get('email')
     interest = request.get_json().get('interet')
-    return save_interet(email,interest)
-
+    print("Email :", email)
+    print("Intérêt :", interest)
+    
+    # Teste un retour simple pour voir si le 404 disparaît
+    return f"Données reçues : {email}, {interest}", 200
 @app.route("/recommend_courses", methods=["GET"])
 def recommend_courses():
     # 1) récupérer l'id (1 par défaut si absent)

@@ -5,15 +5,16 @@ import { useState } from "react";
 import { Modal } from "@/components/all/Modal";
 import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
 
 
 
 
-
+const cokie= new Cookies()
 
 const SigninPage = () => {
 
-  const router =useRouter();
+  const router = useRouter();
 
     // State to handle modal visibility and the entered confirmation code.
     const [isModalForgetOpen, setModalForgetOpen] = useState(false);
@@ -21,6 +22,9 @@ const SigninPage = () => {
     const [succ,setSucc]= useState({status:false,msg:'default succes message'})
     const [code, setCode] = useState("");
     const [code_back,setCodeback]=useState('')
+
+
+
 
     const handlclose=()=>{
       setErr({...err,status:false})
@@ -78,8 +82,20 @@ const SigninPage = () => {
     const Signin =async()=>{
       await api.post('/login',form)
       .then(res=>{
+        const email=res.data.email
+        const id_compte=res.data.id_compte
+        const id=res.data.id
+        const nom=res.data.nom
+        const prenom=res.data.prenom
+        cokie.set('email', email, { path: '/' });
+        cokie.set('id_compte',id_compte)
+        cokie.set('id',id_compte)
+        cokie.set('nom',nom)
+        cokie.set('prenom',prenom)
+        router.push(`/`)
         setSucc({...succ,status:true,msg:res.data.succes})
         setErr({...err,status:false})
+       
       })
     .catch(err=>{
       setErr({...err,status:true,msg:err.response.data.error})

@@ -10,6 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
+from models import db,Course
+
 
 from service.pre_traitement import pretraiter_data
 
@@ -143,7 +145,22 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
 
     driver.quit()
 
-    df = pd.DataFrame(all_courses)
-    df.to_csv(CSV_PATH, index=False, encoding="utf-8-sig")
-    pretraiter_data()
-    return df
+    #df = pd.DataFrame(all_courses)
+    #df.to_csv(CSV_PATH, index=False, encoding="utf-8-sig")
+    #pretraiter_data()
+    #return df
+
+    for course_data in all_courses:
+        # Vérifie si le cours existe déjà (basé sur le lien unique)
+        existing = Course.query.filter_by(link=course_data["link"]).first()
+        
+        if not existing:
+            course_data['category']=url.split('/')[4].replace("%20"," ")
+            course = Course(**course_data)
+            db.session.add(course)    
+    db.session.commit()    
+    print(f"[INFO] {len(all_courses)} cours insérés dans la base de données.")
+
+    return [course_data for course_data in all_courses if not Course.query.filter_by(link=course_data["link"]).first()]
+
+

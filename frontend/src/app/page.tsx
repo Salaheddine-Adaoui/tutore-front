@@ -1,3 +1,5 @@
+'use client'
+
 // src/app/page.tsx (or wherever your Home component is located)
 
 
@@ -11,13 +13,36 @@ import Dashboard from "../components/Dashboard";
 import { Metadata } from "next";
 import RecommendedCourses from "@/components/RecommendedCourses";
 import Chatbot from "@/components/Chatbot1";
+import { useRouter } from "next/navigation";
+import Cookies from "universal-cookie";
+import { useEffect, useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Free Next.js Template for Startup and SaaS",
-  description: "This is Home for Startup Nextjs Template",
-};
+
 
 export default function Home() {
+
+
+  const cokie = new Cookies()
+
+  // si besoin de email en home page concernant statistique
+  const email=cokie.get('email')
+  const id=cokie.get('id')
+  const nom=cokie.get('nom')
+  const prenom=cokie.get('prenom') 
+
+  useEffect(()=>{
+    console.log(email)
+    console.log(nom)
+    console.log(id)
+    console.log(prenom)
+  },[])
+
+
+
+
+  
+
+  
   return (
     <>
       <ScrollUp />

@@ -7,6 +7,7 @@ class Interet(db.Model):
 
     EtudiantInterets  = db.relationship('EtudiantInteret',back_populates='interets')
 
+
     
 
 

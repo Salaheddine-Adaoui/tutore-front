@@ -50,8 +50,8 @@ const SignupPage = () => {
 
   // apis 
 
-  const signup=()=>{
-    api.post('/register',form)
+  const signup=async()=>{
+    await api.post('/register',form)
     .then(res=>{
       setSucc({...succ,status:true,msg:res.data.success})
       setErr({...err,status:false})

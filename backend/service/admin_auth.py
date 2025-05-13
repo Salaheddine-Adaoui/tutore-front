@@ -50,3 +50,19 @@ def login_admin():
 #
 # from admin_auth import admin_bp
 # app.register_blueprint(admin_bp)
+
+def change_password(email,cureent,new,confirm):
+    admin = Administrateur.query.filter_by(email=email).first()
+    if not admin :
+        return jsonify({'error':"this email not exist"}),404
+    
+    if not check_password_hash(admin._password_hash, cureent):
+        return jsonify({'error':"current mot de passe is incorrct"}),400
+    
+    if new != confirm:
+        return jsonify({'error':'the confirm password is not true '}),400
+    
+    admin.password = new  
+    db.session.commit()  
+    
+    return jsonify({'success': "Password updated successfully"}), 200

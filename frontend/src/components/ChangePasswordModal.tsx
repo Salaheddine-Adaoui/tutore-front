@@ -19,21 +19,23 @@ const ChangePasswordModal = ({ userId, onClose }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPwd !== confirm) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error("Les mots de passe de confirmation ne sont pas identiques");
       return;
     }
     try {
       setLoading(true);
-      await updatePassword(userId, oldPwd, newPwd);     // POST /updatepassword
-      toast.success("Mot de passe mis à jour");
+      await updatePassword(userId, oldPwd, newPwd);   // POST /updatepassword
+      toast.success("Mot de passe mis à jour avec succès !");
       onClose();
     } catch (err: any) {
+      // 👉 ICI pour afficher le message d’erreur venant du backend
       toast.error(
         err.response?.data?.error ?? "Impossible de changer le mot de passe"
       );
     } finally {
       setLoading(false);
     }
+    
   };
 
   return (

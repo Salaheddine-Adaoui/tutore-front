@@ -6,24 +6,28 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "node_modules/react-modal-video/css/modal-video.css";
 import "../styles/index.css";
+import { usePathname } from "next/navigation";
 
 import QueryProvider from "@/lib/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+    children,
+    }: {
+      children: React.ReactNode;
+    }) {
+
+      const pathname=usePathname();
+      const isadmin = pathname.startsWith('/admin')
   return (
     <html suppressHydrationWarning lang="en">
       <head />
       <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
         <QueryProvider>
-          <Header />
+          {!isadmin && <Header />}
           {children}
-          <Footer />
+          {!isadmin && <Footer />}
           <ScrollToTop />
         </QueryProvider>
       </body>

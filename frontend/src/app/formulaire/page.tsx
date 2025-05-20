@@ -1,37 +1,46 @@
 'use client'
 
+import { Modal } from "@/components/all/Modal";
 import { api } from "@/lib/api";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const interests = [
-  "Big Data",
-  "Développement informatique",
-  "Data Analytics",
-  "Machine Learning",
-  "AI",
-  "Devops",
-  "Cyber Sécurité",
-  "Réseaux Informatiques (Networking)",
-  "Sécurité Réseaux (Network Security)",
-  "Génie des Procédés Chimiques",
-  "Énergie Renouvelable",
-  "Traitement des Eaux et Dépollution",
-  "Gestion des Déchets et Économie Circulaire",
-  "Électronique (Analogique et Numérique)",
-  "Électrotechnique (Machines et Systèmes Électriques)",
-  "Automatismes et Commande des Systèmes",
-  "Réseaux Électriques et Smart Grids",
+  { with: "Big_Data", without: "Big Data" },
+  { with: "Software_Development", without: "Software Development" },
+  { with: "Data_Analytics", without: "Data Analytics" },
+  { with: "ML", without: "ML" },
+  { with: "AI", without: "AI" },
+  { with: "DevOps", without: "DevOps" },
+  { with: "Cybersecurity", without: "Cybersecurity" },
+  { with: "Networking", without: "Networking" },
+  { with: "Network_Security", without: "Network Security" },
+  { with: "Chemical_Engineering", without: "Chemical Engineering" },
+  { with: "Renewable_Energy", without: "Renewable Energy" },
+  { with: "Water_Treatment", without: "Water Treatment" },
+  { with: "Waste_Management", without: "Waste Management" },
+  { with: "Electronics", without: "Electronics" },
+  { with: "Electrical_Engineering", without: "Electrical Engineering" },
+  { with: "Control_Systems", without: "Control Systems" },
+  { with: "Smart_Grids", without: "Smart Grids" }
 ];
+
+
 
 const Formular = () => {
 
   const router =useRouter()
 
+  const [modal,setModal]=useState(false)
   const [selectedInterests, setSelectedInterests] = useState([]);
   const param = useSearchParams()
   const email = param.get('email')
+
+
+  const handlclose=()=>{
+    setModal(false)
+  }
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -88,14 +97,14 @@ const Formular = () => {
                           type="checkbox"
                           id={`interest-${index}`}
                           name="interests"
-                          value={interest}
-                          checked={selectedInterests.includes(interest)}
+                          value={interest.with}
+                          checked={selectedInterests.includes(interest.with)}
                           onChange={handleCheckboxChange}
                         
                           className="mr-2 h-4 w-4"
                         />
                         <label htmlFor={`interest-${index}`} className="text-sm text-dark dark:text-white">
-                          {interest}
+                          {interest.without}
                         </label>
                       </div>
                     ))}
@@ -111,6 +120,7 @@ const Formular = () => {
           </div>
         </div>
       </section>
+      {modal?<Modal nature={'succes'} message={'interets saved whit success'} closed={handlclose}/>:''}
     </>
   );
 };

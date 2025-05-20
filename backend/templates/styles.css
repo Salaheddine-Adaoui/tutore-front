@@ -1,0 +1,43 @@
+/* styles.css */
+body {
+    background-color: #f3f4f6; /* bg-gray-100 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    background-color: #ffffff; /* bg-white */
+    padding: 2.5rem; /* p-10 */
+    border-radius: 1rem; /* rounded-xl */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+    color: #48bb78; /* text-green-600 */
+    margin-bottom: 1rem; /* mb-4 */
+  }
+  
+  .message {
+    color: #4b5563; /* text-gray-700 */
+    margin-bottom: 1.5rem; /* mb-6 */
+  }
+  
+  .back-button {
+    display: inline-block;
+    background-color: #4299e1; /* bg-blue-500 */
+    color: #ffffff;
+    padding: 0.75rem 1.5rem; /* px-6 py-3 */
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: background-color 0.3s ease; /* transition-colors duration-300 */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .back-button:hover {
+    background-color: #3182ce; /* hover:bg-blue-600 */
+  }
+  

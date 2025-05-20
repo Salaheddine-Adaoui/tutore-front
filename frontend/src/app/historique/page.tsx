@@ -18,6 +18,7 @@ const HistoriquePage = () => {
   
   const cokie = new Cookies()
   const email = cokie.get('email')
+  const id = cokie.get('id')
 
   const getHistorique=()=>{
 
@@ -50,7 +51,7 @@ const HistoriquePage = () => {
             hist.map((v,k)=>{
               return (
                 <div key={k} className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3">
-                  <SingleCourse formation={v.formation} />
+                  <SingleCourse formation={v.formation} etat={v.etat}/>
               </div>
               )
             })

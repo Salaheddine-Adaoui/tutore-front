@@ -15,7 +15,7 @@ const page = () => {
           {/* Card 1: Change Password */}
           <div
             className="cursor-pointer w-80 h-52 rounded-lg bg-white shadow-lg p-5 flex items-center justify-center transition-transform duration-300 hover:scale-105"
-            onClick={() => { router.push('/changepassword') }}
+            onClick={() => { router.push('/admin/updatepassword') }}
           >
             <div className="w-72 text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4 mx-auto">

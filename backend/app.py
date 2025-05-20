@@ -94,21 +94,41 @@ def index():
 def getallinter():
     return get_all_interet()
 
+
 # scraping endpoint 
 @app.route('/scr')
 def scr():
-    categorie_list=get_all_interet()
-    l=[]
+    l= [] #get_all_interet()
+    categorie_list = [
+            "Big_Data",
+            "Software_Development",
+            "Data_Analytics",
+            "ML",
+            "AI",
+            "DevOps",
+            "Cybersecurity",
+            "Networking",
+            "Network_Security",
+            "Chemical_Engineering",
+            "Renewable_Energy",
+            "Water_Treatment",
+            "Waste_Management",
+            "Electronics",
+            "Electrical_Engineering",
+            "Control_Systems",
+            "Smart_Grids"
+        ]
+
     for i in categorie_list:
         i= i.replace(" ","%20")
-        for j in range(1,11):
+        for j in range(1,7):
             l.append( f"https://www.udemyfreebies.com/search/{i}/{j}")
     try:
         courses = scrape_udemyfreebies(l)
         return jsonify({"status": "success", "data": courses}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
+ 
 
 @app.route('/admin/login', methods=['POST'])
 def login_admin():
@@ -418,6 +438,23 @@ def updateAdminPassword():
     confirm=obj.get('confirm')
     return change_password(email,passw,new,confirm)
 
+
+# save liked course 
+@app.route('/saveCourseLiked',methods=['POST'])
+def saveCourseLiked():
+    link=request.args.get('link')
+    id_etudiant=request.args.get('id')
+    result = saveCourseLikedServ(link,id_etudiant)
+
+    return result
+
+@app.route('/isLiked')
+def isLikedCourse():
+    link=request.args.get('link')
+    id_etudiant=request.args.get('id')
+    result = isLked(link,id_etudiant)
+
+    return result
 
 
 # -----------------------------------------------------------

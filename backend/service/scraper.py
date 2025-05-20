@@ -67,8 +67,7 @@ def get_course_description(driver: webdriver.Chrome, url: str) -> str:
 def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
     """
     Scrape all pages in *urls* and return a Pandas DataFrame.
-    The results are **also** cached to ``udemyfreebies_courses.csv`` so
-    the frontend (or other routes) can serve the data without re‑scraping.
+    The results are also stored in the DB (if not already present).
     """
     if isinstance(urls, str):
         urls = [urls]
@@ -81,56 +80,51 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
     options.add_argument("--lang=fr-FR")
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
-    # options.add_argument("--headless")  # enable if you want headless Chrome
 
     driver = webdriver.Chrome(service=service, options=options)
     all_courses: list[dict] = []
 
     for url in urls:
-        driver.get(url)
         try:
+            # Extraire la catégorie depuis l'URL courante
+            category_from_url = url.split('/')[4].replace("%20", " ")
+
+            driver.get(url)
             WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "theme-block"))
             )
             print(f"[DEBUG] Scraping URL: {url}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"[ERROR] Loading error for {url}: {exc}")
-            continue
 
-        time.sleep(3)
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        course_blocks = soup.find_all("div", class_="theme-block")
+            time.sleep(3)
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+            course_blocks = soup.find_all("div", class_="theme-block")
 
-        for block in course_blocks:
-            try:
-                title_tag = block.find("div", class_="coupon-name").find("a")
-                title = title_tag.text.strip()
-                original_link = title_tag["href"]
-                freebie_link = (
-                    original_link
-                    if original_link.startswith("http")
-                    else f"https://www.udemyfreebies.com{original_link}"
-                )
-                direct_link = convert_udemyfreebies_link(original_link)
+            for block in course_blocks:
+                try:
+                    title_tag = block.find("div", class_="coupon-name").find("a")
+                    title = title_tag.text.strip()
+                    original_link = title_tag["href"]
+                    freebie_link = (
+                        original_link
+                        if original_link.startswith("http")
+                        else f"https://www.udemyfreebies.com{original_link}"
+                    )
+                    direct_link = convert_udemyfreebies_link(original_link)
 
-                image = block.find("a", class_="theme-img").find("img")["src"]
-                category = block.find("div", class_="coupon-specility").text.strip()
+                    image = block.find("a", class_="theme-img").find("img")["src"]
+                    language = block.find("div", class_="coupon-details-extra-3").find_all("p")[0].text.strip()
+                    instructor = block.find("div", class_="coupon-details-extra-3").find_all("p")[1].text.strip()
+                    rating_info = block.find("div", class_="coupon-details-extra-3").find_all("p")[2].text.strip()
+                    enrolled_info = block.find("div", class_="coupon-details-extra-3").find_all("p")[3].text.strip()
+                    price_info = block.find("div", class_="coupon-details-extra-3").find_all("p")[4].text.strip()
 
-                details = block.find("div", class_="coupon-details-extra-3")
-                language = details.find_all("p")[0].text.strip()
-                instructor = details.find_all("p")[1].text.strip()
-                rating_info = details.find_all("p")[2].text.strip()
-                enrolled_info = details.find_all("p")[3].text.strip()
-                price_info = details.find_all("p")[4].text.strip()
+                    description = get_course_description(driver, freebie_link)
 
-                description = get_course_description(driver, freebie_link)
-
-                all_courses.append(
-                    dict(
+                    course_data = dict(
                         title=title,
                         link=direct_link,
                         image=image,
-                        category=category,
+                        category=category_from_url,  # ✅ ici on utilise la bonne catégorie
                         language=language,
                         instructor=instructor,
                         rating=rating_info,
@@ -138,29 +132,27 @@ def scrape_udemyfreebies(urls: Union[List[str], str]) -> pd.DataFrame:
                         price=price_info,
                         description=description,
                     )
-                )
-            except Exception as exc:  # noqa: BLE001
-                print(f"[WARN] Skipping a block: {exc}")
-                continue
+
+                    all_courses.append(course_data)
+                except Exception as exc:
+                    print(f"[WARN] Skipping a block: {exc}")
+                    continue
+
+        except Exception as exc:
+            print(f"[ERROR] Loading error for {url}: {exc}")
+            continue
 
     driver.quit()
 
-    #df = pd.DataFrame(all_courses)
-    #df.to_csv(CSV_PATH, index=False, encoding="utf-8-sig")
-    #pretraiter_data()
-    #return df
-
+    # Insertion dans la base de données
+    inserted_courses = []
     for course_data in all_courses:
-        # Vérifie si le cours existe déjà (basé sur le lien unique)
         existing = Course.query.filter_by(link=course_data["link"]).first()
-        
         if not existing:
-            course_data['category']=url.split('/')[4].replace("%20"," ")
             course = Course(**course_data)
-            db.session.add(course)    
-    db.session.commit()    
-    print(f"[INFO] {len(all_courses)} cours insérés dans la base de données.")
+            db.session.add(course)
+            inserted_courses.append(course_data)
+    db.session.commit()
 
-    return [course_data for course_data in all_courses if not Course.query.filter_by(link=course_data["link"]).first()]
-
-
+    print(f"[INFO] {len(inserted_courses)} cours insérés dans la base de données.")
+    return inserted_courses

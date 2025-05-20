@@ -28,18 +28,18 @@ const Recommandation = () => {
   }
 
   return (
-    <main className="bg-[#0B0D17] min-h-screen mt-20">
-      <header className="text-center py-10 text-white">
-        <h1 className="text-4xl font-bold">Bienvenue sur notre plateforme</h1>
-        <p className="text-gray-300 mt-4 max-w-xl mx-auto">
-          Nous avons sélectionné pour vous les meilleures formations pour booster vos compétences.
+    <main className="bg-[#ffffff] min-h-screen mt-20">
+      <header className="text-center py-10 text-black">
+        <h1 className="text-4xl font-bold">Welcome to our platform</h1>
+        <p className="text-blue-900 mt-4 max-w-xl mx-auto">
+          We have selected the best courses for you to boost your skills.
         </p>
 
         {/* Barre de recherche */}
         <div className="mt-6 flex justify-center">
           <input
             type="text"
-            placeholder="Rechercher une formation..."
+            placeholder="Search for a course..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="px-4 py-2 border border-gray-400 w-96 rounded-none focus:outline-none text-black focus:ring-2 focus:ring-blue-500 border-r-0"
@@ -48,7 +48,7 @@ const Recommandation = () => {
             onClick={handleSearch}
             className="bg-blue-600 text-white px-4 py-2 border border-blue-600 hover:bg-blue-700 transition"
           >
-            Rechercher
+             Search
           </button>
         </div>
       </header>
@@ -65,7 +65,7 @@ const Recommandation = () => {
                 href={course.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
+                className="bg-[#ffffff] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
             >
                 {/* 1. Conteneur image */}
                 <div className="w-full h-48 bg-gray-800 flex-shrink-0">
@@ -81,13 +81,13 @@ const Recommandation = () => {
                 <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
                     <div className="flex items-center justify-between mb-2">
-                    <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                    <span className="bg-blue-600 text-whit text-xs font-semibold px-2 py-1 rounded">
                         Score : {(course.similarity * 100).toFixed(1)}%
                     </span>
-                    <span className="text-gray-400 text-sm">{course.price}</span>
+                    <span className="text-black text-sm">{course.price}</span>
                     </div>
-                    <h3 className="text-xl font-semibold mb-3">{course.title}</h3>
-                    <p className="text-gray-300 text-sm mb-4">{course.enrolled}</p>
+                    <h3 className="text-xl text-black font-semibold mb-3">{course.title}</h3>
+                    <p className="text-black text-sm mb-4">{course.enrolled}</p>
                 </div>
                 </div>
             </a>

@@ -7,13 +7,13 @@ export default function RecommendedCourses() {
   const { data, isLoading, error } = useRecommendedCourses(1); // id 1 par défaut
 
   return (
-    <section className="bg-[#0B0D17] text-white py-12">
+    <section className="bg-[#ffffff] text-black py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Formations recommandées pour vous
+            Recommended courses for you
           </h2>
-          <p className="text-gray-300 max-w-xl mx-auto">
+          <p className="text-black max-w-xl mx-auto">
             {isLoading
               ? "Chargement…"
               : error
@@ -34,7 +34,7 @@ export default function RecommendedCourses() {
                 href={course.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
+                className="bg-[#ffffff] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
               >
                 <div className="w-full h-48 bg-gray-800 flex-shrink-0">
                   <img

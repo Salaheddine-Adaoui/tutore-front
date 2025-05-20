@@ -4,22 +4,43 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from typing import Union
-
+from models import Course, Historique
 # Chargement modèle NLP
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Chemins par défaut
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "static" / "dataCsv"
-DEFAULT_HISTORY = DATA_DIR / "history.csv"
-DEFAULT_DATASET = DATA_DIR / "udemyfreebies_courses.csv"
+#BASE_DIR = Path(__file__).resolve().parent.parent
+#DATA_DIR = BASE_DIR / "static" / "dataCsv"
+#DEFAULT_HISTORY = DATA_DIR / "history.csv"
+#DEFAULT_DATASET = DATA_DIR / "udemyfreebies_courses.csv"
 
+#def _load_df():
+   # """Charge le dataset de formations depuis CSV."""
+  #  df = pd.read_csv(DEFAULT_DATASET)
+  #  if 'title' not in df.columns or 'id_formation' not in df.columns:
+  #      raise ValueError("Le dataset doit contenir les colonnes 'id_formation' et 'title'")
+  #  return df
+
+
+#utiliser la base de donnee au lieux de csv
 def _load_df():
-    """Charge le dataset de formations depuis CSV."""
-    df = pd.read_csv(DEFAULT_DATASET)
-    if 'title' not in df.columns or 'id_formation' not in df.columns:
-        raise ValueError("Le dataset doit contenir les colonnes 'id_formation' et 'title'")
-    return df
+    """Charge les formations depuis la base de données avec SQLAlchemy."""
+    courses = Course.query.all()
+    data = [{
+            'id_formation': course.id_formation,
+            'title': course.title,
+            'link': course.link,
+            'price': course.price,
+            'enrolled': course.enrolled,
+            'image': course.image
+        } for course in courses]
+    return pd.DataFrame(data)
+
+def _load_history():
+    """Charge l'historique depuis la base de données avec SQLAlchemy."""
+    history = Historique.query.all()
+    data = [{'id_formation': h.id_formation} for h in history]
+    return pd.DataFrame(data)
 
 def recommend_from_history(
     # the code below support from Version 3.10 and newest
@@ -30,16 +51,11 @@ def recommend_from_history(
     """
     Recommande les k formations les plus proches du centroïde des formations visitées.
     """
-    history_path = Path(history_csv) if history_csv else DEFAULT_HISTORY
-
-    if not history_path.exists():
-        raise FileNotFoundError(f"Fichier d'historique introuvable : {history_path}")
-
-    hist = pd.read_csv(history_path)
-    if 'id_formation' not in hist.columns:
-        raise ValueError("Le fichier historique doit contenir une colonne 'id_formation'")
-
+    #history_path = Path(history_csv) if history_csv else DEFAULT_HISTORY
+     # Charger l'historique
+    hist = _load_history()
     visited_ids = hist['id_formation'].dropna().astype(int).unique().tolist()
+
 
     # 1) Charger les données
     df = _load_df()
@@ -57,9 +73,6 @@ def recommend_from_history(
     id_to_idx = {fid: idx for idx, fid in enumerate(df['id_formation'])}
     visited_idx = [id_to_idx[i] for i in visited_ids if i in id_to_idx]
 
-    # print("\n--- Formations visitées ---")
-    # print(visited_ids)
-    # print("Indices correspondants :", visited_idx)
 
     # 5) Calcul du centroïde
     if visited_idx:

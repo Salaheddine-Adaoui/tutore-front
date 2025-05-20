@@ -5,24 +5,52 @@ import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from models import Course
 
 from service.pre_traitement import nettoyer_search  # garde prétraitement si nécessaire
 
 # Constantes
-BASE_DIR = Path(__file__).resolve().parent.parent
-CSV_FILE = BASE_DIR / "static" / "dataCsv" / "udemyfreebies_courses.csv"
+#BASE_DIR = Path(__file__).resolve().parent.parent
+#CSV_FILE = BASE_DIR / "static" / "dataCsv" / "udemyfreebies_courses.csv"
 EMBED_MODEL_NAME = "all-MiniLM-L6-v2"
 TOP_K_DEFAULT = 6
 SIMILARITY_THRESHOLD = 0.1
 
 
-@lru_cache(maxsize=1)
-def _load_df() -> pd.DataFrame:
-    df = pd.read_csv(CSV_FILE)
+#@lru_cache(maxsize=1)
+#def _load_df() -> pd.DataFrame:
+ #   df = pd.read_csv(CSV_FILE)
 
     # ✅ Ajout de la colonne pour recherche sémantique
-    df['TitleDescpt'] = df['title'].fillna('') + ' ' + df['description'].fillna('')
+  #  df['TitleDescpt'] = df['title'].fillna('') + ' ' + df['description'].fillna('')
     
+   # return df
+
+# utiliser les formations de la base de donnee
+@lru_cache(maxsize=1)
+def _load_df() -> pd.DataFrame:
+    """
+    Charge les données depuis la base de données PostgreSQL.
+    """
+    # Récupération des cours depuis la base de données
+    courses = Course.query.all()
+
+    # Conversion en DataFrame
+    data = [{
+        'id_formation': course.id_formation,
+        'title': course.title,
+        'description': course.description,
+        'link': course.link,
+        'price': course.price,
+        'enrolled': course.enrolled,
+        'image': course.image
+    } for course in courses]
+    
+    df = pd.DataFrame(data)
+
+    # Ajouter la colonne pour recherche sémantique
+    df['TitleDescpt'] = df['title'].fillna('') + ' ' + df['description'].fillna('')
+
     return df
 @lru_cache(maxsize=1)
 def _load_model() -> SentenceTransformer:

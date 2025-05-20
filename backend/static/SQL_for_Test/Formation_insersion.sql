@@ -1,5 +1,5 @@
 -- 1
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -18,7 +18,7 @@ VALUES
 );
 
 -- 2
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -37,7 +37,7 @@ VALUES
 );
 
 -- 3
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -56,7 +56,7 @@ VALUES
 );
 
 -- 4 (multi-line description)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -132,7 +132,7 @@ VALUES
 );
 
 -- 5
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -151,7 +151,7 @@ VALUES
 );
 
 -- 6 (multi-line)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -197,7 +197,7 @@ VALUES
 );
 
 -- 7
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -216,7 +216,7 @@ VALUES
 );
 
 -- 8 (multi-line)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -253,7 +253,7 @@ VALUES
 );
 
 -- 9
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -272,7 +272,7 @@ VALUES
 );
 
 -- 10 (multi-line)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -309,7 +309,7 @@ VALUES
 );
 
 -- 11 (multi-line)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (
@@ -346,7 +346,7 @@ VALUES
 );
 
 -- 12 (multi-line)
-INSERT INTO public."Formation"
+INSERT INTO public."courses"
   (id_formation,title,link,image,category,language,instructor,rating,enrolled,price,description,"TitleDescpt")
 VALUES
 (

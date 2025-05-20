@@ -26,6 +26,8 @@ from service.customDashbord import get_dashboard_stats
 
 from service.authentication import Register,login,remember_password,chek_code,update_password,save_interet,getEtudiant_Interet1
 from service.customDashbord import get_dashboard_stats
+from service.saveHistorique import save_historique
+
 from flask_cors import CORS
 
 from models.Historique import Historique
@@ -342,7 +344,30 @@ def delete_history_for_student(id_etudiant: int):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-    
+
+
+@app.route("/history", methods=["POST"])
+def add_history():
+    data = request.get_json() or {}
+    sid = data.get("id_etudiant")
+    cid = data.get("id_formation")
+
+    if not sid or not cid:
+        return jsonify({"error": "id_etudiant and id_formation required"}), 400
+
+    try:
+        save_historique(sid, cid)
+        return jsonify({"message": "historique saved"}), 201
+
+    except ValueError as ve:
+        # e.g. course not found or interest not found
+        return jsonify({"error": str(ve)}), 400
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
 # recommndation par formulaire 
 @app.route('/recommndation_formualire', methods=['GET'])
 def recommandation_formualire():

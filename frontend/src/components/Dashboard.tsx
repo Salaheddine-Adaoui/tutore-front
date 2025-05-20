@@ -38,7 +38,7 @@ export default function Dashboard() {
   // Get the logged‐in student ID (ensure you set this on login!)
 
   // const etudiantId = parseInt(localStorage.getItem("id_etudiant") || "0", 10);
-  const etudiantId =1
+  const etudiantId =2
   
   // Totals
   const [totals, setTotals] = useState({

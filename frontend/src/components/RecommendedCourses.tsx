@@ -3,8 +3,31 @@ import React from "react";
 import { useRecommendedCourses } from "@/lib/hooks/useRecommendedCourses";
 
 export default function RecommendedCourses() {
-  // 1) on récupère directement la liste “magique”
-  const { data, isLoading, error } = useRecommendedCourses(1); // id 1 par défaut
+  const { data, isLoading, error } = useRecommendedCourses(1);
+
+  // send history, then open link
+  const handleClick = async (
+    e: React.MouseEvent,
+    course: any
+  ) => {
+    e.preventDefault();  // stop the default navigation
+    console.log(course)
+    console.log(course.category)
+    try {
+      await fetch("http://localhost:5000/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_etudiant: 2,                   // or the real user ID
+          id_formation: course.id_formation
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to log history:", err);
+    }
+    // now actually open the course link
+    window.open(course.link, "_blank", "noopener");
+  };
 
   return (
     <section className="bg-[#0B0D17] text-white py-12">
@@ -29,12 +52,10 @@ export default function RecommendedCourses() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {data.map((course: any, i: number) => (
-              <a
+              <div
                 key={i}
-                href={course.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
+                onClick={(e) => handleClick(e, course)}
+                className="cursor-pointer bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
               >
                 <div className="w-full h-48 bg-gray-800 flex-shrink-0">
                   <img
@@ -61,9 +82,8 @@ export default function RecommendedCourses() {
                       {course.enrolled}
                     </p>
                   </div>
-                  {/* CTA si besoin */}
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         )}

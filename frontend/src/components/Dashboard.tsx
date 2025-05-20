@@ -180,7 +180,7 @@ export default function Dashboard() {
   return (
     <section className="bg-gradient-to-r from-[#0B0D17] to-[#111827] text-white py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8">Dashboard</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-dark" >Dashboard</h2>
 
         {/* Totals */}
         <div className="grid grid-cols-1 gap-6 mb-12 sm:grid-cols-2 lg:grid-cols-3">

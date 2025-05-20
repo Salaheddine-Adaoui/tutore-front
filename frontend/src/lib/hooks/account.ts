@@ -2,7 +2,7 @@
 import { api } from "@/lib/api";   // axios avec baseURL
 
 export const updatePassword = (
-  userId: number,
+  userId: number | string,   // ← userId est un nombre dans le back
   oldPassword: string,
   newPassword: string
 ) =>

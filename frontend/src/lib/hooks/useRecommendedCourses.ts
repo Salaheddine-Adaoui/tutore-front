@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api";
 
-export function useRecommendedCourses(id_etudiant: number = 1) {
+export function useRecommendedCourses(id_etudiant: number = 3) {
   return useQuery({
     queryKey: ["recommended-courses", id_etudiant],
     queryFn: async () => {

@@ -76,4 +76,4 @@ def recommend_from_interests(user_interests: List[str], k: int = 3) -> pd.DataFr
     recs = df.iloc[best_idx].copy()
     recs['similarity'] = sims[best_idx]
     print("hi recommend from")
-    return recs[['id_formation', 'title', 'similarity', 'link', 'price', 'enrolled','image']]
+    return recs[['id_formation', 'title', 'similarity', 'link', 'price', 'enrolled','image','category']]

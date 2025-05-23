@@ -7,7 +7,7 @@ export default function RecommendedCourses() {
   const { data, isLoading, error } = useRecommendedCourses(1); // id 1 par défaut
 
   return (
-    <section className="bg-[#0B0D17] text-white py-12">
+    <section className="bg-white text-white py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">

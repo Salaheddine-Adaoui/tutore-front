@@ -117,7 +117,7 @@ const Header = () => {
             </Link>
 
             {/* Navigation + actions */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-60">
               {/* Burger mobile */}
               <button
                 onClick={toggleNavbar}
@@ -129,7 +129,7 @@ const Header = () => {
 
               {/* Menu principal */}
               <nav
-                className={`absolute top-full right-0 z-30 w-64 rounded bg-white p-4 shadow-lg dark:bg-gray-800 lg:static lg:block lg:w-auto lg:shadow-none lg:bg-transparent lg:p-0 ${
+                className={`absolute top-full mr-30 z-30 w-64 ml-3 rounded bg-white p-4 shadow-lg dark:bg-gray-800 lg:static lg:block lg:w-auto lg:shadow-none lg:bg-transparent lg:p-0 ${
                   navbarOpen ? "block" : "hidden lg:block"
                 }`}
               >

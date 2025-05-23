@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import Cookies from "universal-cookie";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -38,7 +39,9 @@ export default function Dashboard() {
   // Get the logged‐in student ID (ensure you set this on login!)
 
   // const etudiantId = parseInt(localStorage.getItem("id_etudiant") || "0", 10);
-  const etudiantId =2
+  const cokie =new Cookies()
+  const etudiantId=cokie.get('id')
+
   
   // Totals
   const [totals, setTotals] = useState({

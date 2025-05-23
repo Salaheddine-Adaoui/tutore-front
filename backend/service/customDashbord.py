@@ -31,7 +31,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
         func.count(Historique.id_hist)
     ).filter(
         Historique.id_etudiant == id_etudiant,
-        Historique.etat.ilike("like")
+        Historique.etat.ilike("liked")
     ).scalar() or 0
 
     # — visits by month (from Visited table) —
@@ -62,7 +62,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
         .join(Historique.formation)
         .filter(
           Historique.id_etudiant == id_etudiant,
-          Historique.etat.ilike("like")
+          Historique.etat.ilike("liked")
         )
         .group_by(Course.category)
         .all()

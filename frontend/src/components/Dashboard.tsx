@@ -92,7 +92,7 @@ export default function Dashboard() {
         label: "Visites mensuelles",
         data: visitsByMonth.map((d) => d.count),
         borderColor: "#38BDF8",
-        backgroundColor: "rgba(56, 189, 248, 0.1)",
+        backgroundColor: "rgba(14, 122, 168, 0.1)",
         tension: 0.4,
         fill: true,
       },
@@ -181,21 +181,21 @@ export default function Dashboard() {
   };
 
   return (
-    <section className="bg-gradient-to-r from-[#0B0D17] to-[#111827] text-white py-12">
+    <section className="bg-gradient-to-r from-white to-white text-white py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8">Dashboard</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-dark" >Dashboard</h2>
 
         {/* Totals */}
         <div className="grid grid-cols-1 gap-6 mb-12 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-2">Formations disponibles</h3>
             <p className="text-4xl font-bold">{totals.total_formations}</p>
           </div>
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-2">Formations visitées</h3>
             <p className="text-4xl font-bold">{totals.visited_count}</p>
           </div>
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-2">Formations aimées</h3>
             <p className="text-4xl font-bold">{totals.liked_count}</p>
           </div>
@@ -203,13 +203,13 @@ export default function Dashboard() {
 
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md h-96">
             <Line data={lineData} options={lineOptions} />
           </div>
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md h-96">
             <Bar data={barData} options={barOptions} />
           </div>
-          <div className="bg-[#1C1F29] rounded-lg p-6 shadow-md h-96">
+          <div className="bg-blue-500 rounded-lg p-6 shadow-md h-96">
             <Pie data={pieData} options={pieOptions} />
           </div>
         </div>

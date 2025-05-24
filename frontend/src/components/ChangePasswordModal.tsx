@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { updatePassword } from "../lib/hooks/account";   // ← ton service axios
 import { toast } from "react-hot-toast";
+import Cookies from "universal-cookie";
 
 type Props = {
   userId: number;          // = 1 dans tes tests
@@ -15,25 +16,31 @@ const ChangePasswordModal = ({ userId, onClose }: Props) => {
   const [newPwd, setNewPwd] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const cookies   = new Cookies();
+  
+  const email     = cookies.get("email");
+  const nom       = cookies.get("nom");
+  const prenom    = cookies.get("prenom");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPwd !== confirm) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error("Les mots de passe de confirmation ne sont pas identiques");
       return;
     }
     try {
       setLoading(true);
-      await updatePassword(userId, oldPwd, newPwd);     // POST /updatepassword
-      toast.success("Mot de passe mis à jour");
+      await updatePassword(email, oldPwd, newPwd);   // POST /updatepassword
+      toast.success("Mot de passe mis à jour avec succès !");
       onClose();
     } catch (err: any) {
+      // 👉 ICI pour afficher le message d’erreur venant du backend
       toast.error(
         err.response?.data?.error ?? "Impossible de changer le mot de passe"
       );
     } finally {
       setLoading(false);
     }
+    
   };
 
   return (

@@ -120,19 +120,21 @@ def remember_password(email, mail):
     return jsonify({'error': "email does not exist"}), 400
 
 
-# Update password
-def update_password(email, password):
-    compte = Compte.query.filter_by(email=email).first()
-    if compte:
-        compte.password = password
-        db.session.commit()
-        return jsonify({
-            'success': "password updated successfully"
-        }), 200
-    return jsonify({
-        'error': "this user does not exist"
-    }), 400
 
+
+
+def update_password(email, old_password, new_password):
+    compte = Compte.query.filter_by(email=email).first()
+    if not compte:
+        return jsonify({'error': "Cet utilisateur n'existe pas"}), 400
+
+
+    if compte.password != old_password:  # Attention : comparer directement si tu n'utilises pas de hash
+        return jsonify({'error': "Ancien mot de passe incorrect"}), 400
+
+    compte.password = new_password
+    db.session.commit()
+    return jsonify({'success': "Mot de passe mis à jour avec succès"}), 200
 
 # Check the code for user
 def check_code(email, code):

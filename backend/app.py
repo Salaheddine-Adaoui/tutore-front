@@ -210,6 +210,7 @@ def download_file():
 @app.route("/recommendsearch")
 def recommendsearch_api():
     term = request.args.get("q")
+    id = request.args.get("id")
     if not term:
         return jsonify({"error": "query param 'q' required"}), 400
 
@@ -218,7 +219,7 @@ def recommendsearch_api():
     except ValueError:
         return jsonify({"error": "query param 'k' must be an integer"}), 400
 
-    results = semantic_search(term, k)
+    results = semantic_search(id,term, k)
     return jsonify(results.to_dict(orient="records"))
 
 @app.route("/recommend_history")
@@ -291,14 +292,27 @@ def rember():
 @app.route('/chekcode', methods=['POST'])
 def chek_codee():
     code = request.args.get('email')
+
     local_storage_code = request.args.get('code')
     return check_code(code, local_storage_code)
 
+
+
 @app.route('/updatepassword', methods=['POST'])
 def password_update():
-    password = request.args.get('password')
     email = request.args.get('email')
-    return update_password(email, password)
+
+
+
+    old_password = request.args.get('oldPassword')  # attention au nom
+    new_password = request.args.get('password')
+
+    if not email or not old_password or not new_password:
+        return jsonify({'error': "Champs manquants"}), 400
+
+    return update_password(email, old_password, new_password)
+
+
 
 @app.route("/history/<int:id_etudiant>", methods=["DELETE", "GET"])
 @cross_origin()

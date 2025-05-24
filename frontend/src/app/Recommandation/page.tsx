@@ -14,6 +14,7 @@ const Recommandation = () => {
   const [results, setResults] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
   const [liked, setLiked] = useState<{ [key: number]: boolean }>({})
+  const [isSearch,setisSearch]=useState<boolean>(false)
 
   const cokie=new Cookies()
   const id=cokie.get('id')
@@ -47,15 +48,20 @@ const Recommandation = () => {
 
   const handleSearch = async () => {
     if (!query.trim()) return
+
+    setisSearch(true)
     try {
       const response = await axios.get('http://localhost:5000/recommendsearch', {
         params: {
+          id:id,
           q: query,
           k: 9,
         },
       })
+      setisSearch(false)
       setResults(response.data)
       setError(null)
+
     } catch (err) {
       setError("Erreur lors de la recherche.")
       setResults([])
@@ -82,7 +88,7 @@ const Recommandation = () => {
             onClick={handleSearch}
             className="bg-blue-600 text-white px-4 py-2 border border-blue-600 hover:bg-blue-700 transition"
           >
-            Rechercher
+            {isSearch? 'Rechercher ...' : 'Rechercher'}
           </button>
         </div>
       </header>
@@ -122,6 +128,7 @@ const Recommandation = () => {
                           icon={faHeart}
                           onClick={(e) => {
                             e.preventDefault() // pour ne pas suivre le lien
+                            e.stopPropagation()
                             setLiked((prev) => ({
                               ...prev,
                               [index]: !prev[index],

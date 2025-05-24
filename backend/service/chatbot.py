@@ -1,8 +1,10 @@
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.document_loaders import PyPDFLoader
+
+
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama
 from pathlib import Path
 
 # Définition du chemin vers le fichier PDF
@@ -21,7 +23,7 @@ faiss_db=FAISS.from_documents(documents,embedding_model)
 
 model=Ollama(model='llama3')
  
-def genrer_reponse(question):
+def generer_reponse(question):
     docs=faiss_db.similarity_search(question,k=3)
     contexte = "\n".join([doc.page_content for doc in docs])  
     contexte_formaté = f"""

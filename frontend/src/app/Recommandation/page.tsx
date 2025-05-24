@@ -25,6 +25,26 @@ const Recommandation = () => {
              .catch(err=>console.log(err.response.data))
     }
 
+    // send history, then open link
+      const handleClick = async (
+        e: React.MouseEvent,
+        course: any
+      ) => {
+        e.preventDefault();  // stop the default navigation
+        console.log(course)
+        console.log(course.category)
+        try {
+          await fetch(`http://localhost:5000/history?id_etudiant=${id}&id_formation=${course.id_formation}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+          });
+        } catch (err) {
+          console.error("Failed to log history:", err);
+        }
+        // now actually open the course link
+        window.open(course.link, "_blank", "noopener");
+      };
+
   const handleSearch = async () => {
     if (!query.trim()) return
     try {
@@ -71,12 +91,13 @@ const Recommandation = () => {
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
         {results.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {results.map((course, index) => (
-              <a
+              <div
                 key={index}
-                href={course.link}
-                target="_blank"
+                
+                onClick={(e)=>{handleClick(e,course)}}
+                
                 rel="noopener noreferrer"
                 className="bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
               >
@@ -120,7 +141,7 @@ const Recommandation = () => {
                     <p className="text-gray-300 text-sm mb-4">{course.enrolled}</p>
                   </div>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         ) : (

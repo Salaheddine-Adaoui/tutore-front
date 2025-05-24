@@ -1,3 +1,4 @@
+
 # service/customDashbord.py
 
 from datetime import datetime
@@ -96,3 +97,4 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
         "likes_by_category": likes_by_category,
         "visits_by_category": visits_by_category
     }
+

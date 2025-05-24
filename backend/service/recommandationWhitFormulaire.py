@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -26,6 +27,27 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
+
+
+
+
+from models import Course
+# Téléchargement nécessaire
+#nltk.download('stopwords')
+#nltk.download('wordnet')
+#nltk.download('omw-1.4')
+
+# Chemins
+#BASE_DIR = Path(__file__).resolve().parent.parent
+#DATA_DIR = BASE_DIR / "static" / "dataCsv"
+#DEFAULT_HISTORY = DATA_DIR / "history.csv"
+#DEFAULT_DATASET = DATA_DIR / "udemyfreebies_courses.csv"
+
+# NLP
+model = SentenceTransformer('all-MiniLM-L6-v2')
+stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
+
 def clean_text(text: str) -> str:
     """Nettoie le texte : concaténation, nettoyage, stopwords, lemmatisation."""
     # Minuscule
@@ -39,14 +61,40 @@ def clean_text(text: str) -> str:
     # Reconstruire
     return ' '.join(words)
 
-def _load_df():
-    """Charge et prépare le dataset."""
-    df = pd.read_csv(DEFAULT_DATASET)
-    if 'title' not in df.columns or 'id_formation' not in df.columns or 'description' not in df.columns:
-        raise ValueError("Le dataset doit contenir les colonnes 'id_formation', 'title' et 'description'.")
+#def _load_df():
+    #"""Charge et prépare le dataset."""
+   # df = pd.read_csv(DEFAULT_DATASET)
+    #if 'title' not in df.columns or 'id_formation' not in df.columns or 'description' not in df.columns:
+      #  raise ValueError("Le dataset doit contenir les colonnes 'id_formation', 'title' et 'description'.")
     
+    #df['full_text'] = (df['title'].fillna('') + ' ' + df['description'].fillna('')).apply(clean_text)
+    
+    #return df
+
+# utiliser les formations de la base de donnee
+def _load_df() -> pd.DataFrame:
+    """
+    Charge les données depuis la base de données PostgreSQL.
+    """
+    # Récupération des cours depuis la base de données
+    courses = Course.query.all()
+
+    # Conversion en DataFrame
+    data = [{
+        'id_formation': course.id_formation,
+        'title': course.title,
+        'description': course.description,
+        'link': course.link,
+        'price': course.price,
+        'enrolled': course.enrolled,
+        'image': course.image
+    } for course in courses]
+    
+    df = pd.DataFrame(data)
+
+    # Ajouter la colonne pour recherche sémantique
+    #df['TitleDescpt'] = df['title'].fillna('') + ' ' + df['description'].fillna('')
     df['full_text'] = (df['title'].fillna('') + ' ' + df['description'].fillna('')).apply(clean_text)
-    
     return df
 
 def recommend_from_interests(user_interests: List[str], k: int = 3) -> pd.DataFrame:
@@ -58,7 +106,7 @@ def recommend_from_interests(user_interests: List[str], k: int = 3) -> pd.DataFr
     df = _load_df()
 
     # Générer les embeddings pour tous les full_text
-    texts = df['full_text'].tolist()
+    texts = df['full_text'].tolist()   ####################################################################
     course_embeddings = model.encode(texts, show_progress_bar=False)
     
     # Nettoyer les intérêts utilisateur aussi
@@ -76,4 +124,5 @@ def recommend_from_interests(user_interests: List[str], k: int = 3) -> pd.DataFr
     recs = df.iloc[best_idx].copy()
     recs['similarity'] = sims[best_idx]
     print("hi recommend from")
-    return recs[['id_formation', 'title', 'similarity', 'link', 'price', 'enrolled','image','category']]
+    return recs[['id_formation', 'title', 'similarity', 'link', 'price', 'enrolled','image']]
+

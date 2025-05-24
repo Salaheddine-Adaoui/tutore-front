@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Course } from '@/types/course';
@@ -68,9 +69,4 @@ const HistoriquePage = () => {
 };
 
 export default HistoriquePage;
-{/*courseData.map((course: Course) => (
-              <div key={course.id} className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3">
-                <SingleCourse course={course} />
-              </div>
-            ))*/}
-            
+

@@ -1,3 +1,4 @@
+
 'use client'
 import React, { useState } from 'react'
 import { useRecommendedCourses } from '@/lib/hooks/useRecommendedCourses'
@@ -10,14 +11,15 @@ import { api } from '@/lib/api'
 export default function RecommendedCourses({id}) {
   const cokie=new Cookies()
   const id_etudiant=cokie.get('id')
-  const { data, isLoading, error } = useRecommendedCourses(id_etudiant)
+ 
+  const { data, isLoading, error } = useRecommendedCourses()
   const [liked, setLiked] = useState<{ [key: number]: boolean }>({})
 
   
 
   const savetodb = async (link)=>{
   
-      await api.post(`saveCourseLiked?link=${link}&id=${id}`)
+      await api.post(`saveCourseLiked?link=${link}&id=${id_etudiant}`)
                .then(res=>console.log(res.data))
                .catch(err=>console.log(err.response.data))
       }
@@ -31,13 +33,9 @@ export default function RecommendedCourses({id}) {
     console.log(course)
     console.log(course.category)
     try {
-      await fetch("http://localhost:5000/history", {
+      await fetch(`http://localhost:5000/history?id_etudiant=${id_etudiant}&id_formation=${course.id_formation}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_etudiant: 2,                   // or the real user ID
-          id_formation: course.id_formation
-        }),
+        headers: { "Content-Type": "application/json" }
       });
     } catch (err) {
       console.error("Failed to log history:", err);
@@ -95,13 +93,13 @@ export default function RecommendedCourses({id}) {
                           icon={faHeart}
                           onClick={(e) => {
                             e.preventDefault()
+                            e.stopPropagation()
                             setLiked((prev) => ({
                               ...prev,
                               [i]: !prev[i],
                             }))
 
                             savetodb(course.link)
-
 
                           }}
                           className={`cursor-pointer text-lg transition duration-300 ${
@@ -122,5 +120,4 @@ export default function RecommendedCourses({id}) {
     </section>
   )
 }
-
 

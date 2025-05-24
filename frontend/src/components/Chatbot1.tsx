@@ -55,7 +55,7 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 w-80 z-50 flex flex-col">
+    <div className="fixed bottom-8 right-8 w-96 z-50 flex flex-col">
       <div className="bg-[#1C1F29] rounded-t-lg p-4 flex justify-between items-center">
         <h3 className="text-lg font-bold text-white">ChatbotENSA</h3>
         <button

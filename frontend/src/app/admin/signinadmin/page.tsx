@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { loginAdmin } from "@/lib/hooks/admin";
 import { useRouter } from "next/navigation";
 import Image from "next/image";                  // ← import Image
 import { motion, AnimatePresence } from "framer-motion";
+import Cookies from "universal-cookie";
 
 const SigninPageadmin = () => {
+  const cokie =new Cookies()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
@@ -13,11 +15,21 @@ const SigninPageadmin = () => {
   const [isModalErrerOpen, setModalErrerOpen] = useState(false);
 
   const router = useRouter();
+  const cookies = new Cookies()
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+
+ 
+
+  // … votre logique existante (handleScraping, handleLogout, etc.) …
+ 
 
   const handleLogin = async () => {
     const result = await loginAdmin(email, password);
     if (result.success) {
-      router.push("/signup");
+      router.push("/admin");
+
+      cokie.set('email_admin',email)
     } else {
       setModalErrerOpen(true);
     }

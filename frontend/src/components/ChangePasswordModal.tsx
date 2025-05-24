@@ -10,7 +10,6 @@ type Props = {
   userId: number;          // = 1 dans tes tests
   onClose: () => void;
 };
-
 const ChangePasswordModal = ({ userId, onClose }: Props) => {
   const [oldPwd, setOldPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");

@@ -52,12 +52,12 @@ export default function RecommendedCourses({id}) {
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
             Formations recommandées pour vous
           </h2>
-          <p className="text-gray-300 max-w-xl mx-auto">
+<p className="text-gray-900 text-xl font-semibold max-w-xl mx-auto">
             {isLoading
               ? 'Chargement…'
               : error
               ? `Erreur : ${error}`
-              : 'Basé sur votre historique ou vos centres d’intérêt.'}
+              : 'Recomendation pour vous'}
           </p>
         </div>
 
@@ -71,7 +71,7 @@ export default function RecommendedCourses({id}) {
               <div
                 key={i}
                 onClick={(e) => handleClick(e, course)}
-                className="cursor-pointer bg-[#111827] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
+                className="cursor-pointer bg-[#040720] hover:scale-[1.05] transition rounded-lg shadow-md overflow-hidden flex flex-col"
               >
                 <div className="w-full h-48 bg-gray-800 flex-shrink-0">
                   <img

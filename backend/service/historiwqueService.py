@@ -25,14 +25,13 @@ def get_all(email: str):
             "etat": h.etat,
             "nbr_visite": h.nbr_visite,
             "formation": {
-                "id": h.formation.id_formation,
-                "titre": h.formation.title,
-                "description": h.formation.description,
-                "lien": h.formation.link,
-                "image": h.formation.image,
-                'instructor':h.formation.instructor,
-                "prix": h.formation.price,
-                "enrolled": h.formation.enrolled
+                "titre": h.title,
+                "description": h.description,
+                "lien": h.link,
+                "image": h.image,
+                'instructor':h.instructor,
+                "prix": h.price,
+                "enrolled": h.enrolled
             }
         })
 
@@ -51,7 +50,7 @@ def saveCourseLikedServ(link, student_id):
 
     hist = Historique.query.filter_by(
         id_etudiant=student_id,
-        id_formation=course.id_formation
+        link=course.link
     ).first()
 
     if hist:
@@ -67,9 +66,19 @@ def saveCourseLikedServ(link, student_id):
     try:
         histToSave = Historique(
             id_etudiant=student_id,
-            id_formation=course.id_formation,
             etat='liked',
-            id_interet=intret.id_interet
+            id_interet   =intret.id_interet,
+            title        = course.title,
+            link         = course.link,
+            image        = course.image,
+            language     = course.language,
+            instructor   = course.instructor,
+            rating       = course.rating,
+            enrolled     = course.enrolled,
+            price        = course.price,
+            description  = course.description,     
+            scraped_at   = course.scraped_at,
+            nbr_visite   = 1, 
         )
         db.session.add(histToSave)
         db.session.commit()
@@ -84,7 +93,7 @@ def isLked(link,id):
     course = Course.query.filter_by(link=link).first()
     if not course:
         return jsonify({'error': "Course not found"}), 404
-    hist=Historique.query.filter_by(id_formation=course.id_formation,id_etudiant=id).first()
+    hist=Historique.query.filter_by(link=course.link,id_etudiant=id).first()
     if hist :
         if hist.etat=='liked':
             return jsonify({"success":"liked"}),200

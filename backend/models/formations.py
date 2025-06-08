@@ -17,5 +17,4 @@ class Course(db.Model):
     description = db.Column(db.Text)
     scraped_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Ajouter la relation avec Historique
-    historiques = db.relationship('Historique', back_populates='formation')
+ 

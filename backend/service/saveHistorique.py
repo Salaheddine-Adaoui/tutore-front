@@ -6,11 +6,7 @@ from models.Interet   import Interet
 from models.formations    import Course
 
 def save_historique(id_etudiant: int, id_formation: int) -> Historique:
-    """
-    1) Load the Course to get its category.
-    2) Lookup that category in Interet.interet (case-insensitive).
-    3) Upsert Historique with a non-null id_interet.
-    """
+
     # --- 1) Fetch the course and its category
     course = Course.query.get(id_formation)
     if not course:
@@ -37,7 +33,7 @@ def save_historique(id_etudiant: int, id_formation: int) -> Historique:
         Historique.query
         .filter_by(
             id_etudiant  = id_etudiant,
-            id_formation = id_formation
+            link = course.link
         )
         .first()
     )
@@ -47,9 +43,18 @@ def save_historique(id_etudiant: int, id_formation: int) -> Historique:
     else:
         hist = Historique(
             id_etudiant  = id_etudiant,
-            id_formation = id_formation,
             id_interet   = interet_id,   # guaranteed non-null
             etat         = "not yet",
+            title        = course.title,
+            link        = course.link,
+            image        = course.image,
+            language        = course.language,
+            instructor        = course.instructor,
+            rating        = course.rating,
+            enrolled        = course.enrolled,
+            price        = course.price,
+            description        = course.description,     
+            scraped_at        = course.scraped_at,     
             nbr_visite   = 1,
         )
         db.session.add(hist)

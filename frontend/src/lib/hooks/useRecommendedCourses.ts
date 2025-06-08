@@ -13,6 +13,7 @@ export function useRecommendedCourses() {
     queryKey: ["recommended-courses", id_etudiant],
     queryFn: async () => {
       const res = await api.get(`/recommend_courses?id_etudiant=${id_etudiant}`);
+      console.log("hiii:",res.data)
       return res.data;
     },
   });

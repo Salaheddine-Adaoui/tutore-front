@@ -39,7 +39,7 @@ def _load_df():
 def _load_history(id):
     """Charge l'historique depuis la base de données avec SQLAlchemy."""
     history = Historique.query.filter_by(id_etudiant=id).all()
-    data = [{'id_formation': h.id_formation} for h in history]
+    data = [{'link': h.link} for h in history]
     return pd.DataFrame(data)
 
 def recommend_from_history(
@@ -54,7 +54,7 @@ def recommend_from_history(
     #history_path = Path(history_csv) if history_csv else DEFAULT_HISTORY
      # Charger l'historique
     hist = _load_history(id_etudiant)
-    visited_ids = hist['id_formation'].dropna().astype(int).unique().tolist()
+    visited_ids = hist['link'].dropna().astype(str).unique().tolist()
 
 
     # 1) Charger les données
@@ -70,7 +70,7 @@ def recommend_from_history(
     #     print(f"ID {fid}: {np.round(emb[:5], 3).tolist()}...")  # Affiche les 5 premières dimensions pour lisibilité
 
     # 4) Map des IDs
-    id_to_idx = {fid: idx for idx, fid in enumerate(df['id_formation'])}
+    id_to_idx = {fid: idx for idx, fid in enumerate(df['link'])}
     visited_idx = [id_to_idx[i] for i in visited_ids if i in id_to_idx]
 
 

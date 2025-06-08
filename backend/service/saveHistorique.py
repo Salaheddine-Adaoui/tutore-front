@@ -4,6 +4,8 @@ from models import db
 from models.Historique import Historique
 from models.Interet   import Interet
 from models.formations    import Course
+from datetime import datetime
+from models.Visited   import Visited  
 
 def save_historique(id_etudiant: int, id_formation: int) -> Historique:
 
@@ -58,6 +60,12 @@ def save_historique(id_etudiant: int, id_formation: int) -> Historique:
             nbr_visite   = 1,
         )
         db.session.add(hist)
+    
+    visit = Visited(
+        id_etudiant = id_etudiant,
+        date_visit  = datetime.utcnow()
+    )
+    db.session.add(visit)
 
     db.session.commit()
     return hist

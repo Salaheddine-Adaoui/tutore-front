@@ -54,7 +54,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587            
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'adaouisalah552@gmail.com'
-app.config['MAIL_PASSWORD'] = 'sukqpindpewvhhoh'  # Utilise un mot de passe d'application si Gmail
+app.config['MAIL_PASSWORD'] = 'sukqpindpewvhhoh'  # Utilise un mpot de passe d'application si Gmail
 mail = Mail(app)
 
 # 3. init the db (from models/__init__.py)

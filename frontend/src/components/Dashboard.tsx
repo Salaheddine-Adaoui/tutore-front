@@ -67,6 +67,8 @@ export default function Dashboard() {
           visited_count: d.visited_count,
           liked_count: d.liked_count,
         });
+        console.log("test = ",d.likes_by_category)
+        console.log("test2 = ",d.visits_by_category)
         setVisitsByMonth(d.visits_by_month);
         setLikesByCat(d.likes_by_category);
         setVisitsByCat(d.visits_by_category);

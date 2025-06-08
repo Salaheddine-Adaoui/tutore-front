@@ -32,8 +32,6 @@ const Recommandation = () => {
         course: any
       ) => {
         e.preventDefault();  // stop the default navigation
-        console.log(course)
-        console.log(course.category)
         try {
           await fetch(`http://localhost:5000/history?id_etudiant=${id}&id_formation=${course.id_formation}`, {
             method: "POST",
@@ -44,6 +42,7 @@ const Recommandation = () => {
         }
         // now actually open the course link
         window.open(course.link, "_blank", "noopener");
+        window.location.reload()
       };
 
   const handleSearch = async () => {

@@ -1,7 +1,8 @@
 
 from models import Etudiant,db,Compte,PasswordResetCode,Interet,EtudiantInteret
 from flask import jsonify,render_template
-
+from models.Visited   import Visited  
+from datetime import datetime
 import string
 import random
 from flask_mail import Mail, Message
@@ -61,6 +62,13 @@ def login(email, password):
     compte = Compte.query.filter_by(email=email).first()
     if compte:
         if compte.password == password and compte.status == 'enabled':
+            visit = Visited(
+                id_etudiant = compte.id_utilis,
+                date_visit  = datetime.utcnow()
+            )
+            db.session.add(visit)
+
+            db.session.commit()
             return jsonify({
                 'success': 'login successful',
                 'email': compte.email,

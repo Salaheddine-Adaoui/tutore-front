@@ -60,6 +60,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
             Course.category,
             func.count(Historique.id_hist).label("cnt")
         )
+        .join(Course, Course.link == Historique.link)
         .filter(
           Historique.id_etudiant == id_etudiant,
           Historique.etat.ilike("liked")
@@ -78,6 +79,7 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
             Course.category,
             func.coalesce(func.sum(Historique.nbr_visite), 0).label("sumv")
         )
+        .join(Course, Course.link == Historique.link)
         .filter(Historique.id_etudiant == id_etudiant)
         .group_by(Course.category)
         .all()

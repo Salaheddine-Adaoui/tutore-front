@@ -42,6 +42,8 @@ export default function RecommendedCourses({id}) {
     }
     // now actually open the course link
     window.open(course.link, "_blank", "noopener");
+    window.location.reload()
+
   };
 
 

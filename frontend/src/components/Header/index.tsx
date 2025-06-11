@@ -182,7 +182,7 @@ const Header = () => {
                   {initials || "?"}
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 origin-top-right divide-y divide-gray-200 rounded bg-white shadow-lg dark:divide-gray-700 dark:bg-gray-800">
+                  <div className="absolute right-0 mt-2 w-60 origin-top-right divide-y divide-gray-200 rounded bg-white shadow-lg dark:divide-gray-700 dark:bg-gray-800">
                     <button
                       onClick={deleteHistoryHandler}
                       className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -200,7 +200,7 @@ const Header = () => {
                     </button>
                     <button
                       onClick={logoutHandler}
-                      className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-gray-700"
+                      className="w-full px-4 py-2 text-left text-sm text-blue-600 hover:bg-gray-100 dark:text-blue-400 dark:hover:bg-gray-700"
                     >
                       Déconnexion
                     </button>

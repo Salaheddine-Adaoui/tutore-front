@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import QueryProvider from "@/lib/QueryProvider";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import { usePathname } from "next/navigation";
 import "node_modules/react-modal-video/css/modal-video.css";
 import "../styles/index.css";
 
-import QueryProvider from "@/lib/QueryProvider";
-
 const inter = Inter({ subsets: ["latin"] });
+
+// 🔥 chemins pour lesquels on veut masquer Header / Footer
+const HIDE_LAYOUT_PATHS = ["/signin", "/signup", "/formulaire"];
 
 export default function RootLayout({
   children,
@@ -20,22 +22,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [showLayout, setShowLayout] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    setIsAdmin(pathname.startsWith("/admin"));
-    setShowLayout(true);
-  }, [pathname]);
+  /** true si on est sur /admin* OU sur l’un des chemins à cacher */
+  const hideLayout = useMemo(
+    () =>
+      pathname.startsWith("/admin") ||
+      HIDE_LAYOUT_PATHS.some((p) => pathname.startsWith(p)),
+    [pathname]
+  );
 
   return (
     <html suppressHydrationWarning lang="en">
       <head />
       <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
         <QueryProvider>
-          {showLayout && !isAdmin && <Header />}
+          {!hideLayout && <Header />}
           {children}
-          {showLayout && !isAdmin && <Footer />}
+          {!hideLayout && <Footer />}
+
+          {/* utilitaires */}
           <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
           <ScrollToTop />
         </QueryProvider>

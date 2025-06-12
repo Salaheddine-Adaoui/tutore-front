@@ -209,6 +209,11 @@ const SignupPage = () => {
                     Log in
                   </Link>
                 </p>
+                <p className="text-center text-base font-medium text-body-color">
+                  <Link href="/admin/signinadmin" className="text-primary hover:underline">
+                     Sign in as Admin
+                  </Link>
+                </p>
               </div>
             </div>
           </div>

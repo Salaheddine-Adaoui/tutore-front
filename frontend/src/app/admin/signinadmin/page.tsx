@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";                  // ← import Image
 import { motion, AnimatePresence } from "framer-motion";
 import Cookies from "universal-cookie";
+import Link from "next/link";
 
 const SigninPageadmin = () => {
   const cokie =new Cookies()
@@ -112,7 +113,13 @@ const SigninPageadmin = () => {
                     >
                       Sign in
                     </button>
+                  
                   </div>
+                  <p className="text-center text-base font-medium text-body-color">
+                      <Link href="/signin" className="text-primary hover:underline">
+                         Sign in as Student 
+                      </Link>
+                  </p>
                 </div>
               </div>
             </div>

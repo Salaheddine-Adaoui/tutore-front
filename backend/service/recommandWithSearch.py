@@ -78,7 +78,7 @@ def semantic_search(id_etudiant,query: str, k: int = TOP_K_DEFAULT) -> pd.DataFr
 
 
     hist = _load_history(id_etudiant)
-    visited_ids = hist['id_formation'].dropna().astype(int).unique().tolist()
+    visited_ids = hist['link'].dropna().astype(str).unique().tolist()
 
     df = _load_df()
     clean_q = nettoyer_search(query)
@@ -86,7 +86,7 @@ def semantic_search(id_etudiant,query: str, k: int = TOP_K_DEFAULT) -> pd.DataFr
 
     sims = cosine_similarity(q_emb, _embeddings())[0]
 
-    id_to_idx = {fid: idx for idx, fid in enumerate(df['id_formation'])}
+    id_to_idx = {fid: idx for idx, fid in enumerate(df['link'])}
     visited_idx = [id_to_idx[i] for i in visited_ids if i in id_to_idx]
 
     for idx in visited_idx:

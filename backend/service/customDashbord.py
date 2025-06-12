@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import func
 from models import db
 from models.formations import Course
+from models.Interet import Interet
 from models.Historique import Historique
 from models.Visited import Visited
 
@@ -57,15 +58,15 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
     # — likes by category (join Historique → Formation) —
     raw_likes = (
         db.session.query(
-            Course.category,
+            Interet.interet,
             func.count(Historique.id_hist).label("cnt")
         )
-        .join(Course, Course.link == Historique.link)
+        .join(Interet, Interet.id_interet == Historique.id_interet)
         .filter(
           Historique.id_etudiant == id_etudiant,
           Historique.etat.ilike("liked")
         )
-        .group_by(Course.category)
+        .group_by( Interet.interet)
         .all()
     )
     likes_by_category = [
@@ -76,12 +77,12 @@ def get_dashboard_stats(id_etudiant: int) -> dict:
     # — visits by category (sum nbr_visite) —
     raw_visits_cat = (
         db.session.query(
-            Course.category,
+            Interet.interet,
             func.coalesce(func.sum(Historique.nbr_visite), 0).label("sumv")
         )
-        .join(Course, Course.link == Historique.link)
+        .join(Interet, Interet.id_interet == Historique.id_interet)
         .filter(Historique.id_etudiant == id_etudiant)
-        .group_by(Course.category)
+        .group_by(Interet.interet)
         .all()
     )
     visits_by_category = [

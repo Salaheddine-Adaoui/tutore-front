@@ -5,6 +5,8 @@ from models.Historique import Historique
 from models.Interet   import Interet
 from models.formations    import Course
 from datetime import datetime
+import re
+
 
 def save_historique(id_etudiant: int, id_formation: int) -> Historique:
 
@@ -15,7 +17,11 @@ def save_historique(id_etudiant: int, id_formation: int) -> Historique:
     if not course.category:
         raise ValueError(f"Course id {id_formation} has no category set")
 
-    interet_nom = course.category
+    raw_cat = course.category
+
+    # — normalize: replace underscores (and any run of non-alphanumerics) by a single space, then trim —
+    interet_nom = re.sub(r'[^0-9A-Za-zÀ-ÖØ-öø-ÿ]+', ' ', raw_cat).strip()
+
     print("👉👉👉 resolved interet_nom from course:", interet_nom)
 
     # --- 2) Lookup the interest

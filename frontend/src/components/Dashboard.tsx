@@ -114,11 +114,11 @@ export default function Dashboard() {
     },
     scales: {
       x: {
-        ticks: { color: "#A3A3A3" },
+        ticks: { color: "#E1E1E1" },
         grid: { color: "rgba(255, 255, 255, 0.1)" },
       },
       y: {
-        ticks: { color: "#A3A3A3" },
+        ticks: { color: "#E1E1E1" },
         grid: { color: "rgba(255, 255, 255, 0.1)" },
       },
     },
@@ -149,11 +149,11 @@ export default function Dashboard() {
     },
     scales: {
       x: {
-        ticks: { color: "#A3A3A3" },
+        ticks: { color: "#E1E1E1" },
         grid: { color: "rgba(255, 255, 255, 0.1)" },
       },
       y: {
-        ticks: { color: "#A3A3A3" },
+        ticks: { color: "#E1E1E1" },
         grid: { color: "rgba(255, 255, 255, 0.1)" },
       },
     },

@@ -68,7 +68,7 @@ with app.app_context():
 # Routes  
 # -----------------------------------------------------------
 # Définir le chemin vers ton PDF
-PDF_PATH = os.path.join('static', 'dataPdf', 'infos_ensa.pdf')
+PDF_PATH = "C:/Users/MBQ/Desktop/projet Tutore/backend/static/dataPdf/infos_ensa.pdf"
 @app.route('/read_pdf', methods=['GET'])
 def read_pdf():
     with pdfplumber.open(PDF_PATH) as pdf:
@@ -98,6 +98,8 @@ def update_pdf():
         return jsonify({'message': 'PDF updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
 @app.route("/")
 def index():
     print("👉 Route / appelée")

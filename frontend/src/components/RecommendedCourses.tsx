@@ -31,7 +31,8 @@ export default function RecommendedCourses({id}) {
   ) => {
     e.preventDefault();  // stop the default navigation
     console.log(course)
-    console.log(course.category)
+    console.log("id_etudiant",id_etudiant)
+    console.log("course.id_formation",course.id_formation)
     try {
       await fetch(`http://localhost:5000/history?id_etudiant=${id_etudiant}&id_formation=${course.id_formation}`, {
         method: "POST",
